@@ -4,6 +4,12 @@ Simple bot written in Golang using [DiscordGo](https://github.com/bwmarrin/disco
 ## Introduction
 This is my first project using Golang, originally written just for fun in midnight, rewritten to be flexible and easily scalable next 2 days
 
+## Scalability
+* Gophelper has simple rate limiter that can has different config per command
+* Gophelper provides easy way to add commands with ability to use arguments
+* Commands can contain spaces e.g. `play pingpong` may be just one command
+* Nothing stops you also from creating multiple routers which may be used for a different purpose e.g. providing different language based on router's prefix
+
 ## How do I install this
 1. Clone repo
 2. Edit config files to your preferences and add `BOT_TOKEN` env variable which will store your bot token
@@ -12,15 +18,15 @@ This is my first project using Golang, originally written just for fun in midnig
 5. Launch built executable
 
 ## Config files
-Gophelper provides easy to edit JSON config files.
+Gophelper provides easy to edit JSON config files. <br>
 It also provides way to translate bot into multiple languages without much effort, in this repo you can see two languages: polish and english, nothing stops you by expanding it by more languages
 
 ## Pulls, forks and issues
 Be free to fork this repo, if you have any comment regarding to quality of my Golang code - go ahead and open issue/add pull request. My first meet with go was 3 days ago, so I know many things can be done better.
 
 ## Commands
-Gopher comes with some commands out of a box, all of them are pretty simple
-Here's the list of some of them:
+Gopher comes with some commands out of a box, all of them are pretty simple <br>
+Here's the list of some of them: <br>
 
 | Alias                       | Description                                                                                                                                                                                                                                                                                                                                                                                 |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -38,3 +44,6 @@ Here's the list of some of them:
 ## To do:
 * Definitely rewrite help command so it supports categories and code doesn't look as bad
 * Idk, I'll see what comes, maybe music bot, maybe some mod commands
+
+## Media
+![Gophelper](https://i.imgur.com/cucVVuM.gif)
