@@ -16,7 +16,7 @@ var LanguageSwitcher = &gophelper.Command{
 
 	RateLimit: gophelper.RateLimit{
 		Limit:    1,
-		Duration: time.Second * 1,
+		Duration: time.Second * 30,
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
