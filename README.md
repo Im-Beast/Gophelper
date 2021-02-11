@@ -1,14 +1,17 @@
 # Gophelper
+![Go report](https://goreportcard.com/badge/github.com/Im-Beast/Gophelper)
+
 Simple bot written in Golang using [DiscordGo](https://github.com/bwmarrin/discordgo).
 
 ## Introduction
 This is my first project using Golang, originally written just for fun in midnight, rewritten to be flexible and easily scalable next 2 days
 
-## Scalability
+## Futures
 * Gophelper has simple rate limiter that can has different config per command
 * Gophelper provides easy way to add commands with ability to use arguments
 * Commands can contain spaces e.g. `play pingpong` may be just one command
 * Nothing stops you also from creating multiple routers which may be used for a different purpose e.g. providing different language based on router's prefix
+* Routers support middleware to control what passes through
 
 ## How do I install this
 1. Clone repo
