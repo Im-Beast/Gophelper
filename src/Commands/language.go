@@ -5,12 +5,15 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	"github.com/bwmarrin/discordgo"
 )
 
 // LanguageSwitcher command, this command i keep in english and english only for understandable reasons
 var LanguageSwitcher = &gophelper.Command{
 	Name:    "👅 Language",
 	Aliases: []string{"lang"},
+
+	NeededPermissions: discordgo.PermissionAdministrator,
 
 	Description: "Change router language config on the fly (Admin only)",
 
@@ -23,32 +26,6 @@ var LanguageSwitcher = &gophelper.Command{
 		arguments := context.Arguments
 		session := context.Session
 		message := context.Event
-
-		roles, _ := session.GuildRoles(message.GuildID)
-
-		isAdmin := false
-
-		for _, role := range message.Member.Roles {
-			for _, drole := range roles {
-				if drole.ID != role {
-					continue
-				}
-
-				if drole.Permissions&0x8 != 0 {
-					isAdmin = true
-					break
-				}
-			}
-
-			if isAdmin {
-				break
-			}
-		}
-
-		if isAdmin == false {
-			session.ChannelMessageSend(message.ChannelID, "You need to be admin to use this command")
-			return
-		}
 
 		if len(arguments) == 0 {
 			session.ChannelMessageSend(message.ChannelID, "You need to specify language config file")
