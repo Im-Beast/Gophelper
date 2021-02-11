@@ -1,6 +1,9 @@
 {
-    "messsageSendErrror": "Sending message failed.",
-    "rateLimitError": "You are sending this command too often, try again in %d seconds",
+    "errors": {
+        "messsageSendErrror": "Sending message failed.",
+        "tooFewPermissions": "no.",
+        "rateLimitError": "You are sending this command too often, try again in %d seconds"
+    },
 
     "funFacts": [
         "The raccoon can fit in your ass.",
