@@ -51,6 +51,7 @@ func main() {
 
 func registerMiddleware() {
 	router.AddMiddleware(gophelper.RateLimiterMiddleware)
+	router.AddMiddleware(gophelper.PermissionCheckMiddleware)
 }
 
 func registerCommands() {
