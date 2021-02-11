@@ -91,7 +91,7 @@ var Kiss = &gophelper.Command{
 		message, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.MessageSendError)
+			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
 		} else {
 			session.MessageReactionAdd(message.ChannelID, message.ID, "😘")
 		}
