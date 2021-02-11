@@ -1,7 +1,7 @@
 {
     "errors": {
-        "messsageSendErrror": "Nie udało się wysłać wiadomośći",
-        "tooFewPermissions": "nie",
+        "messsageSendErrror": "Nie udało się wysłać wiadomości",
+        "tooFewPermissions": "Nie masz wystarczających permisji by używać tej komendy",
         "rateLimitError": "Używasz tej komendy za czesto, sprobuj ponownie za %d sekundy"
     },
 

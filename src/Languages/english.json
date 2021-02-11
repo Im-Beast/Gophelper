@@ -1,13 +1,13 @@
 {
     "errors": {
         "messsageSendErrror": "Sending message failed.",
-        "tooFewPermissions": "no.",
+        "tooFewPermissions": "You don't have enough permissions to use this command.",
         "rateLimitError": "You are sending this command too often, try again in %d seconds"
     },
 
     "funFacts": [
         "The raccoon can fit in your ass.",
-        "Your snot fly at a speed of ~ 44 km / h when you sneeze.",
+        "Your snot fly at a speed of ~ 44 km/h when you sneeze.",
         "The United States has no official language.",
         "A cockroach can live for several weeks without a head. It will eventually starve to death.",
         "Galileo's middle finger is stored in the Science Museum in Florence.",
