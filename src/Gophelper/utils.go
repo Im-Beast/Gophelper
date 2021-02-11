@@ -19,7 +19,7 @@ func IsNumber(str string) bool {
 	return matches
 }
 
-// StringToInt convers string to int, if its invalid returns -1
+// StringToInt converts string to int, if its invalid returns -1
 func StringToInt(str string) int {
 	num, err := strconv.Atoi(str)
 	if err != nil {

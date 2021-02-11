@@ -12,7 +12,7 @@ type Router struct {
 	Prefixes      []string
 	CaseSensitive bool
 
-	Middleware []func(*CommandContext) (bool, func(*CommandContext))
+	Middleware []Middleware
 
 	Config *Config
 
@@ -25,6 +25,7 @@ func (router *Router) AddCmd(cmd *Command) {
 		if langCmd.ID == cmd.ID {
 			cmd.LanguageSettings = langCmd
 			cmd.Description = langCmd.Description
+			break
 		}
 	}
 
@@ -33,8 +34,8 @@ func (router *Router) AddCmd(cmd *Command) {
 
 // RefreshCommands refreshes commands data
 func (router *Router) RefreshCommands() {
-	for _, cmd := range router.Commands {
-		for _, langCmd := range router.Config.Language.Commands {
+	for _, langCmd := range router.Config.Language.Commands {
+		for _, cmd := range router.Commands {
 			if langCmd.ID == cmd.ID {
 				cmd.LanguageSettings = langCmd
 				cmd.Description = langCmd.Description
@@ -44,7 +45,7 @@ func (router *Router) RefreshCommands() {
 }
 
 // AddMiddleware Adds middleware to router
-func (router *Router) AddMiddleware(middleware func(*CommandContext) (bool, func(*CommandContext))) {
+func (router *Router) AddMiddleware(middleware Middleware) {
 	router.Middleware = append(router.Middleware, middleware)
 }
 

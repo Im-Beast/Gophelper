@@ -77,10 +77,15 @@ type (
 
 	// LanguageConfig contains config information that is mainly about translation
 	LanguageConfig struct {
-		MessageSendError string          `json:"messageSendError"`
-		RateLimitError   string          `json:"rateLimitError"`
-		FunFacts         []string        `json:"funFacts"`
-		Commands         []CommandConfig `json:"commands"`
+		Errors struct {
+			MessageSend       string `json:"messageSend"`
+			TooFewPermissions string `json:"tooFewPermissions"`
+			NSFWOnly          string `json:"nsfwOnly"`
+		} `json:"errors"`
+
+		RateLimitError string          `json:"rateLimitError"`
+		FunFacts       []string        `json:"funFacts"`
+		Commands       []CommandConfig `json:"commands"`
 	}
 
 	// Config main router config structure

@@ -8,6 +8,10 @@ type Command struct {
 	Aliases       []string
 	CaseSensitive bool
 
+	NeededPermissions int64
+
+	NSFWOnly bool
+
 	Description  string
 	Usage        string
 	UsageOnError bool
