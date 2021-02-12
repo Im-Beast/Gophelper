@@ -37,6 +37,13 @@ type (
 	// HelpCommand structure for help command
 	HelpCommand struct {
 		Embed struct {
+			Main struct {
+				Title       string `json:"title"`
+				Description string `json:"description"`
+			} `json:"main"`
+
+			CategoryTitle string `json:"categoryTitle"`
+
 			Name   string `json:"name"`
 			NoName string `json:"noName"`
 
@@ -45,7 +52,8 @@ type (
 
 			Usage string `json:"usage"`
 
-			Aliases string `json:"aliases"`
+			Aliases   string `json:"aliases"`
+			NoAliases string `json:"noAliases"`
 		} `json:"embed,omitempty"`
 
 		Page string `json:"page,omitempty"`
@@ -64,9 +72,8 @@ type (
 		} `json:"response,omitempty"`
 	}
 
-	// CommandConfig contains structure that commands use for their translation
+	// CommandConfig contains structure that commands used for their translation
 	CommandConfig struct {
-		ID          string `json:"id"`
 		Description string `json:"description,omitempty"`
 		HelpCommand
 		GiveCommand
@@ -75,17 +82,23 @@ type (
 		StatsCommand
 	}
 
+	// CategoryConfig contains structure that categories used for their translation
+	CategoryConfig struct {
+		Description string `json:"description"`
+	}
+
 	// LanguageConfig contains config information that is mainly about translation
 	LanguageConfig struct {
 		Errors struct {
 			MessageSend       string `json:"messageSend"`
 			TooFewPermissions string `json:"tooFewPermissions"`
 			NSFWOnly          string `json:"nsfwOnly"`
+			RateLimit         string `json:"rateLimit"`
 		} `json:"errors"`
 
-		RateLimitError string          `json:"rateLimitError"`
-		FunFacts       []string        `json:"funFacts"`
-		Commands       []CommandConfig `json:"commands"`
+		FunFacts   []string                  `json:"funFacts"`
+		Commands   map[string]CommandConfig  `json:"commands"`
+		Categories map[string]CategoryConfig `json:"categories"`
 	}
 
 	// Config main router config structure
@@ -109,7 +122,12 @@ func LoadConfig(configPath string, languageConfigPath string) *Config {
 	}
 
 	var config Config
-	json.Unmarshal(file, &config)
+	err = json.Unmarshal(file, &config)
+
+	if err != nil {
+		fmt.Println("Failed unmarshaling config file", err)
+		return nil
+	}
 
 	err = config.LoadLanguage(languageConfigPath)
 
@@ -129,7 +147,11 @@ func (config *Config) LoadLanguage(languageConfigPath string) error {
 		return err
 	}
 
-	json.Unmarshal(file, &config.Language)
+	err = json.Unmarshal(file, &config.Language)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
