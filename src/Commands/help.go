@@ -219,9 +219,9 @@ func getCategoryEmbed(name string, page int, language *gophelper.CommandConfig) 
 		})
 
 		return &embed, len(categoryEmbeds)
-	} else {
-		return nil, len(categoryEmbeds)
 	}
+
+	return nil, len(categoryEmbeds)
 }
 
 func getCommandEmbed(name string) *discordgo.MessageEmbed {

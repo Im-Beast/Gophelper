@@ -9,6 +9,7 @@ type Category struct {
 }
 
 var (
+	//CATEGORY_MISC Miscellaneous commands
 	CATEGORY_MISC = &Category{
 		Name:          "Miscellaneous",
 		Aliases:       []string{"misc", "miscellaneous"},
@@ -16,6 +17,7 @@ var (
 		ReactionEmoji: "✨",
 	}
 
+	//CATEGORY_CONFIG Bot config commands
 	CATEGORY_CONFIG = &Category{
 		Name:          "Bot config",
 		Aliases:       []string{"config", "botconfig", "bot_config"},
@@ -23,6 +25,7 @@ var (
 		ReactionEmoji: "⚙️",
 	}
 
+	//CATEGORY_FUN Fun commands
 	CATEGORY_FUN = &Category{
 		Name:          "Fun",
 		Aliases:       []string{"fun"},
@@ -30,6 +33,7 @@ var (
 		ReactionEmoji: "😀",
 	}
 
+	//CATEGORY_MOD Moderation commands
 	CATEGORY_MOD = &Category{
 		Name:          "Moderation",
 		Aliases:       []string{"moderation", "mod"},
@@ -37,6 +41,7 @@ var (
 		ReactionEmoji: "🛡️",
 	}
 
+	//CATEGORY_GAMES Game commands
 	CATEGORY_GAMES = &Category{
 		Name:          "Games",
 		Aliases:       []string{"games"},

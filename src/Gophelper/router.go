@@ -23,7 +23,7 @@ type Router struct {
 
 var routerMiddleware = make(map[string][]Middleware)
 
-// AddCmd Adds command to router
+// AddCommand Adds command to router
 func (router *Router) AddCommand(command *Command) {
 	router.RefreshCommand(command)
 
@@ -36,7 +36,7 @@ func (router *Router) AddCommand(command *Command) {
 	router.Commands = append(router.Commands, command)
 }
 
-// RemoveCmd returns function that removes command from maps
+// RemoveCommand returns function that removes command from maps
 func (router *Router) RemoveCommand(command *Command) {
 	if len(routerMiddleware["RemoveCommand"]) > 0 {
 		for _, middleware := range routerMiddleware["RemoveCommand"] {

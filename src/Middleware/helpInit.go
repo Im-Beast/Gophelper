@@ -9,9 +9,13 @@ import (
 )
 
 var (
-	MainHelpEmbed        = &discordgo.MessageEmbed{}
-	HelpCategoryEmbeds   = make(map[*gophelper.Category][]*discordgo.MessageEmbed)
-	HelpEmbeds           = make(map[string]*discordgo.MessageEmbed)
+	// MainHelpEmbed is main help page that shows categories
+	MainHelpEmbed = &discordgo.MessageEmbed{}
+	// HelpCategoryEmbeds contain embeds used to show per-category help page
+	HelpCategoryEmbeds = make(map[*gophelper.Category][]*discordgo.MessageEmbed)
+	// HelpEmbeds contain help embeds about all commands (stored via all aliases)
+	HelpEmbeds = make(map[string]*discordgo.MessageEmbed)
+	// HelpStringCategories contains categories sorted by their aliases
 	HelpStringCategories = make(map[string]*gophelper.Category)
 )
 
