@@ -1,9 +1,11 @@
 package commands
 
 import (
+	"fmt"
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 )
 
 // Hentai cartoons
@@ -13,9 +15,11 @@ var Hentai = &gophelper.Command{
 	Name:    "🐙 Hentai",
 	Aliases: []string{"hentai"},
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Description: "Just japanese cartoons",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -31,9 +35,13 @@ var Hentai = &gophelper.Command{
 		}
 
 		if channel.NSFW {
-			session.ChannelMessageSend(message.ChannelID, "ur still horni :|")
+			_, err = session.ChannelMessageSend(message.ChannelID, "ur still horni :|")
 		} else {
-			session.ChannelMessageSend(message.ChannelID, "u horni >:( its nsfw only")
+			_, err = session.ChannelMessageSend(message.ChannelID, "u horni >:( its nsfw only")
+		}
+
+		if err != nil {
+			fmt.Println("Error on hentai command when sending message")
 		}
 	},
 }

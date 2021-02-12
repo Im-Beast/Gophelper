@@ -6,11 +6,9 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
-
-// Code of this command is pretty shit
-// I'll recode it soon so it supports categories and code won't be so shit
 
 // Help shows help
 var Help = &gophelper.Command{
@@ -19,207 +17,213 @@ var Help = &gophelper.Command{
 	Name:    "📜 Help",
 	Aliases: []string{"help"},
 
+	Category: gophelper.CATEGORY_MISC,
+
 	Description: "Get some help",
 
-	Usage: "help [_page/_command]",
+	Usage: "help [_category [_page]/_command]",
 
-	RateLimit: gophelper.RateLimit{
-		Limit:    5,
+	RateLimit: middleware.RateLimit{
+		Limit:    1,
 		Duration: time.Second * 30,
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
 		session := context.Session
 		message := context.Event
-
-		routerLanguage := context.Router.Config.Language
+		router := context.Router
+		arguments := context.Arguments
 		language := context.Command.LanguageSettings
 
-		embed := &discordgo.MessageEmbed{
-			Color: 0x007d9c,
-		}
+		var (
+			embed           *discordgo.MessageEmbed
+			reactMessage    *discordgo.Message
+			closeHandler    func()
+			page            int
+			pages           int
+			categoryAlias   string
+			err             error
+			categoryHandler func(session *discordgo.Session, event *discordgo.MessageReactionAdd)
+			pageHandler     func(session *discordgo.Session, event *discordgo.MessageReactionAdd)
 
-		arguments := context.Arguments
+			expireCooldown int = 15
+			expireTimer    int = expireCooldown
+		)
 
-		helpForCommand := len(arguments) > 0 && !gophelper.IsNumber(arguments[0])
-
-		if helpForCommand {
-			commandName := arguments[0]
-
-			for _, command := range context.Router.Commands {
-				for _, alias := range command.Aliases {
-					if !gophelper.MatchesPrefix(alias, commandName, false) {
-						continue
-					}
-
-					name := command.Name
-					if name == "" {
-						name = language.Embed.NoName
-					}
-
-					embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-						Name:   language.Embed.Name,
-						Value:  fmt.Sprintf("```%s```", name),
-						Inline: true,
-					})
-
-					description := command.Description
-					if description == "" {
-						description = language.Embed.NoDescription
-					}
-
-					embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-						Name:   language.Embed.Description,
-						Value:  fmt.Sprintf("```%s```", description),
-						Inline: true,
-					})
-
-					usage := command.Usage
-					if usage != "" {
-						embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-							Name:   language.Embed.Usage,
-							Value:  fmt.Sprintf("```%s```", usage),
-							Inline: true,
-						})
-					}
-				}
-			}
-
-			if len(embed.Fields) == 0 {
-				embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-					Name:   language.CommandNotFound.Title,
-					Value:  fmt.Sprintf("```%s```", language.CommandNotFound.Message),
-					Inline: false,
-				})
-			}
-
-			embed.Footer = &discordgo.MessageEmbedFooter{
-				Text: gophelper.RandomStringElement(routerLanguage.FunFacts),
-			}
-
-			session.ChannelMessageSendEmbed(message.ChannelID, embed)
-			return
-		}
-
-		pages := make(map[int][]*gophelper.Command)
-
-		refreshPage := func(page int, embed *discordgo.MessageEmbed) {
-			for _, command := range pages[page] {
-				name := command.Name
-				if name == "" {
-					name = language.Embed.NoName
-				}
-
-				embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-					Name:   language.Embed.Name,
-					Value:  fmt.Sprintf("```%s```", name),
-					Inline: true,
-				})
-
-				description := command.Description
-				if description == "" {
-					description = language.Embed.NoDescription
-				}
-
-				embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-					Name:   language.Embed.Description,
-					Value:  fmt.Sprintf("```%s```", description),
-					Inline: true,
-				})
-
-				embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-					Name:   language.Embed.Aliases,
-					Value:  fmt.Sprintf("```%s```", strings.Join(command.Aliases, ", ")),
-					Inline: true,
-				})
-			}
-
-			embed.Footer = &discordgo.MessageEmbedFooter{
-				Text: fmt.Sprintf("%s %d/%d", language.Page, page, len(pages)),
-			}
-		}
-
-		pageCount := 0
-		for i, command := range context.Router.Commands {
-			if i%4 == 0 {
-				pageCount++
-			}
-
-			pages[pageCount] = append(pages[pageCount], command)
-		}
-
-		currentPage := 1
-		if len(arguments) > 0 {
-			currentPage = gophelper.StringToInt(arguments[0])
-			if currentPage > pageCount {
-				currentPage = pageCount
-			} else if currentPage <= 0 {
-				currentPage = 0
-			}
-		}
-
-		refreshPage(currentPage, embed)
-
-		reactMessage, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
-		if err != nil {
-			fmt.Println("Error while sending help embed", err)
-			return
-		}
-
-		session.MessageReactionAdd(reactMessage.ChannelID, reactMessage.ID, "⬅️")
-		session.MessageReactionAdd(reactMessage.ChannelID, reactMessage.ID, "⏹️")
-		session.MessageReactionAdd(reactMessage.ChannelID, reactMessage.ID, "➡️")
-
-		var cancelHelp func()
-		isCancelled := false
-
-		closeHandler := session.AddHandler(func(session *discordgo.Session, event *discordgo.MessageReactionAdd) {
+		pageHandler = func(session *discordgo.Session, event *discordgo.MessageReactionAdd) {
 			if event.UserID != session.State.User.ID {
-				session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.Name, event.UserID)
+				err := session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.Name, event.UserID)
+				if err != nil {
+					fmt.Printf("Failed to remove reaction %s", event.Emoji.Name)
+				}
 			}
 
 			if event.MessageID != reactMessage.ID || event.UserID != message.Author.ID {
 				return
 			}
 
-			embed.Fields = []*discordgo.MessageEmbedField{}
-
 			switch event.Emoji.Name {
 			case "⬅️":
-				currentPage--
-				break
+				page = gophelper.ClampInt(page-1, 0, pages-1)
 			case "➡️":
-				currentPage++
-				break
-			case "⏹️":
-				cancelHelp()
+				page = gophelper.ClampInt(page+1, 0, pages-1)
+			case "⬇️":
+				_, err = session.ChannelMessageEditEmbed(reactMessage.ChannelID, reactMessage.ID, middleware.MainHelpEmbed)
+				if err != nil {
+					fmt.Println("Failed to edit embed message")
+				}
+
+				go addCategoryReactions(context, reactMessage.ChannelID, reactMessage.ID)
+
+				closeHandler()
+				closeHandler = session.AddHandler(categoryHandler)
 				return
 			default:
 				return
 			}
 
-			if currentPage > pageCount {
-				currentPage = pageCount
-			} else if currentPage <= 0 {
-				currentPage = 1
+			expireTimer = expireCooldown
+			embed, pages = getCategoryEmbed(categoryAlias, page, &language)
+			_, err = session.ChannelMessageEditEmbed(reactMessage.ChannelID, reactMessage.ID, embed)
+			if err != nil {
+				fmt.Println("Error on editing embed", err)
 			}
-
-			refreshPage(currentPage, embed)
-			session.ChannelMessageEditEmbed(reactMessage.ChannelID, reactMessage.ID, embed)
-		})
-
-		cancelHelp = func() {
-			isCancelled = true
-			session.MessageReactionsRemoveAll(reactMessage.ChannelID, reactMessage.ID)
-			closeHandler()
-			session.MessageReactionAdd(reactMessage.ChannelID, reactMessage.ID, "⛔")
 		}
 
-		go func() {
-			time.Sleep(time.Second * 30)
-			if !isCancelled {
-				cancelHelp()
+		categoryHandler = func(session *discordgo.Session, event *discordgo.MessageReactionAdd) {
+			if event.UserID != session.State.User.ID {
+				err = session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.Name, event.UserID)
+				if err != nil {
+					fmt.Printf("Failed to remove reaction %s", event.Emoji.Name)
+				}
 			}
-		}()
+
+			if event.MessageID != reactMessage.ID || event.UserID != message.Author.ID {
+				return
+			}
+
+			for _, category := range router.Categories {
+				if category.ReactionEmoji == event.Emoji.Name {
+					categoryAlias = category.Aliases[0]
+					embed, pages = getCategoryEmbed(categoryAlias, 0, &language)
+
+					expireTimer = expireCooldown
+
+					_, err = session.ChannelMessageEditEmbed(reactMessage.ChannelID, reactMessage.ID, embed)
+
+					if err != nil {
+						fmt.Println("Failed to edit embed message")
+					}
+
+					go addPageReactions(session, reactMessage.ChannelID, reactMessage.ID)
+					closeHandler()
+					closeHandler = session.AddHandler(pageHandler)
+					return
+				}
+			}
+		}
+
+		if len(arguments) == 0 {
+			reactMessage, err = session.ChannelMessageSendEmbed(message.ChannelID, middleware.MainHelpEmbed)
+
+			if err != nil {
+				fmt.Println("Error while sending embed:", err)
+				return
+			}
+
+			go addCategoryReactions(context, reactMessage.ChannelID, reactMessage.ID)
+
+			closeHandler = session.AddHandler(categoryHandler)
+		} else {
+			name := arguments[0]
+
+			if len(arguments) > 1 && gophelper.IsNumber(arguments[1]) {
+				page = gophelper.StringToInt(arguments[1]) - 1 // count from 1 for user conveniency
+			}
+
+			embed, _ = getCategoryEmbed(name, page, &language)
+			if embed == nil {
+				embed = getCommandEmbed(name)
+				if embed == nil {
+					return
+				}
+			}
+
+			reactMessage, err = session.ChannelMessageSendEmbed(message.ChannelID, embed)
+			go addPageReactions(session, reactMessage.ChannelID, reactMessage.ID)
+			closeHandler = session.AddHandler(pageHandler)
+		}
+
+		ticker := time.NewTicker(time.Second)
+
+		for range ticker.C {
+			if expireTimer <= 0 {
+				err = session.MessageReactionsRemoveAll(reactMessage.ChannelID, reactMessage.ID)
+				err = session.MessageReactionAdd(reactMessage.ChannelID, reactMessage.ID, "⛔")
+
+				closeHandler()
+				ticker.Stop()
+			}
+
+			expireTimer--
+		}
+
 	},
+}
+
+func addCategoryReactions(context *gophelper.CommandContext, ChannelID string, MessageID string) {
+	session := context.Session
+	router := context.Router
+
+	err := session.MessageReactionsRemoveAll(ChannelID, MessageID)
+
+	if err != nil {
+		fmt.Printf("Failed to remove all emojis")
+	}
+
+	for _, category := range router.Categories {
+		err := session.MessageReactionAdd(ChannelID, MessageID, category.ReactionEmoji)
+		if err != nil {
+			fmt.Printf("Couldn't add emoji for category %s", category.Name)
+		}
+	}
+}
+
+func addPageReactions(session *discordgo.Session, ChannelID string, MessageID string) {
+	err := session.MessageReactionsRemoveAll(ChannelID, MessageID)
+
+	if err != nil {
+		fmt.Printf("Failed to remove all emojis")
+	}
+
+	emojis := [3]string{"⬅️", "➡️", "⬇️"}
+
+	for _, emoji := range emojis {
+		err := session.MessageReactionAdd(ChannelID, MessageID, emoji)
+		if err != nil {
+			fmt.Printf("Failed to add emoji %s", emoji)
+		}
+	}
+}
+
+func getCategoryEmbed(name string, page int, language *gophelper.CommandConfig) (*discordgo.MessageEmbed, int) {
+	category := middleware.HelpStringCategories[strings.ToLower(name)]
+	categoryEmbeds := middleware.HelpCategoryEmbeds[category]
+
+	if len(categoryEmbeds) > 0 && page >= 0 && page <= len(categoryEmbeds)-1 {
+		embed := *categoryEmbeds[page]
+		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+			Name:   language.Page,
+			Value:  fmt.Sprintf("%d/%d", page+1, len(categoryEmbeds)),
+			Inline: false,
+		})
+
+		return &embed, len(categoryEmbeds)
+	} else {
+		return nil, len(categoryEmbeds)
+	}
+}
+
+func getCommandEmbed(name string) *discordgo.MessageEmbed {
+	return middleware.HelpEmbeds[strings.ToLower(name)]
 }

@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 )
 
 // EightBall doggies
@@ -14,9 +16,11 @@ var EightBall = &gophelper.Command{
 	Name:    "🎱 8Ball",
 	Aliases: []string{"8ball"},
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Description: "I'll tell you truth",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -30,12 +34,18 @@ var EightBall = &gophelper.Command{
 
 		answers := language.Answers
 
+		var err error
+
 		if len(arguments) == 0 {
-			session.ChannelMessageSend(message.ChannelID, language.NoArgumentsMessage)
+			_, err = session.ChannelMessageSend(message.ChannelID, language.NoArgumentsMessage)
 		} else {
 			index := rand.Intn(len(answers))
 			randomAnswer := answers[index]
-			session.ChannelMessageSend(message.ChannelID, randomAnswer)
+			_, err = session.ChannelMessageSend(message.ChannelID, randomAnswer)
+		}
+
+		if err != nil {
+			fmt.Println("Error on 8ball command when sending message")
 		}
 	},
 }

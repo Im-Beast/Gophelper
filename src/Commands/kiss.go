@@ -7,6 +7,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -26,9 +27,11 @@ var Kiss = &gophelper.Command{
 	Name:    "😘 Kiss",
 	Aliases: []string{"kiss"},
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Description: "Kiss someone or get kissed :*",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -91,9 +94,13 @@ var Kiss = &gophelper.Command{
 		message, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
+			_, err = session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
 		} else {
-			session.MessageReactionAdd(message.ChannelID, message.ID, "😘")
+			err = session.MessageReactionAdd(message.ChannelID, message.ID, "😘")
+		}
+
+		if err != nil {
+			fmt.Println("Error on kiss command when reacting/sending message")
 		}
 	},
 }

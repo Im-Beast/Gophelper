@@ -7,6 +7,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -30,9 +31,11 @@ var Hug = &gophelper.Command{
 	Name:    "🤗 Hug",
 	Aliases: []string{"hug"},
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Description: "Hug someone or get hugged	",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -95,9 +98,13 @@ var Hug = &gophelper.Command{
 		message, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
+			_, err = session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
 		} else {
-			session.MessageReactionAdd(message.ChannelID, message.ID, "🤗")
+			err = session.MessageReactionAdd(message.ChannelID, message.ID, "🤗")
+		}
+
+		if err != nil {
+			fmt.Println("Error on hug command when reacting/sending message")
 		}
 	},
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -25,12 +26,14 @@ var pets = []string{
 var Pet = &gophelper.Command{
 	ID: "Pet",
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Name:    "✋ Pet",
 	Aliases: []string{"pet"},
 
 	Description: "Pet someone or get pet",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -93,9 +96,13 @@ var Pet = &gophelper.Command{
 		message, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
+			_, err = session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
 		} else {
-			session.MessageReactionAdd(message.ChannelID, message.ID, "✋")
+			err = session.MessageReactionAdd(message.ChannelID, message.ID, "✋")
+		}
+
+		if err != nil {
+			fmt.Println("Error on pet command when sending message")
 		}
 	},
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -28,11 +29,13 @@ var PingPong = &gophelper.Command{
 	Name:    "🏓 Ping Pong",
 	Aliases: []string{"game pingpong"},
 
+	Category: gophelper.CATEGORY_GAMES,
+
 	Description: "ping pong king kong",
 
 	Usage: "game pingpong [_number of points to win] [_reaction ms]",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -56,7 +59,10 @@ var PingPong = &gophelper.Command{
 			if num <= pointLimit {
 				winPoints = num
 			} else {
-				session.ChannelMessageSend(message.ChannelID, fmt.Sprintf(language.TooManyMatchesMessage, pointLimit))
+				_, err := session.ChannelMessageSend(message.ChannelID, fmt.Sprintf(language.TooManyMatchesMessage, pointLimit))
+				if err != nil {
+					fmt.Println("Error on ping pong command when sending message")
+				}
 				return
 			}
 		}
@@ -88,11 +94,17 @@ var PingPong = &gophelper.Command{
 		}
 
 		gameMessage, _ := session.ChannelMessageSend(message.ChannelID, getScore("Ping!"))
-		session.MessageReactionAdd(gameMessage.ChannelID, gameMessage.ID, "🏓")
+		err := session.MessageReactionAdd(gameMessage.ChannelID, gameMessage.ID, "🏓")
+		if err != nil {
+			fmt.Println("Error on ping pong command when adding reaction")
+		}
 
 		closeReactionHandler := session.AddHandler(func(session *discordgo.Session, event *discordgo.MessageReactionAdd) {
 			if event.UserID != session.State.User.ID {
-				session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.ID, event.UserID)
+				err := session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.ID, event.UserID)
+				if err != nil {
+					fmt.Println("Error on ping pong command when removing reaction")
+				}
 			}
 
 			if event.MessageID != gameMessage.ID || event.UserID != message.Author.ID || event.Emoji.Name != "🏓" {
@@ -109,7 +121,12 @@ var PingPong = &gophelper.Command{
 
 			if userScore >= winPoints || gopherScore >= winPoints {
 				closeReactionHandler()
-				session.ChannelMessageEdit(gameMessage.ChannelID, gameMessage.ID, getWinMessage())
+				_, err := session.ChannelMessageEdit(gameMessage.ChannelID, gameMessage.ID, getWinMessage())
+
+				if err != nil {
+					fmt.Println("Error on ping pong command when editing message")
+				}
+
 				ticker.Stop()
 				break
 			}
@@ -120,8 +137,17 @@ var PingPong = &gophelper.Command{
 				gopherScore++
 			}
 
-			session.MessageReactionRemove(gameMessage.ChannelID, gameMessage.ID, "🏓", message.Author.ID)
-			session.ChannelMessageEdit(gameMessage.ChannelID, gameMessage.ID, getScore(""))
+			err := session.MessageReactionRemove(gameMessage.ChannelID, gameMessage.ID, "🏓", message.Author.ID)
+
+			if err != nil {
+				fmt.Println("Error on ping pong command when removing reaction")
+			}
+
+			_, err = session.ChannelMessageEdit(gameMessage.ChannelID, gameMessage.ID, getScore(""))
+
+			if err != nil {
+				fmt.Println("Error on ping pong command when sending message")
+			}
 		}
 	},
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -15,11 +16,13 @@ var Stats = &gophelper.Command{
 	Name:    "📑 Stats",
 	Aliases: []string{"stats"},
 
+	Category: gophelper.CATEGORY_MOD,
+
 	Description: "Gives you information about user",
 
 	Usage: "stats [_user{mention/id}]",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -45,7 +48,10 @@ var Stats = &gophelper.Command{
 		member, err := session.GuildMember(message.GuildID, memberID)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, language.UserNotFound)
+			_, err := session.ChannelMessageSend(message.ChannelID, language.UserNotFound)
+			if err != nil {
+				fmt.Println("Error on stats command when sending message")
+			}
 			return
 		}
 
@@ -75,6 +81,10 @@ var Stats = &gophelper.Command{
 			},
 		}
 
-		session.ChannelMessageSendEmbed(message.ChannelID, embed)
+		_, err = session.ChannelMessageSendEmbed(message.ChannelID, embed)
+
+		if err != nil {
+			fmt.Println("Error on stats command when sending message")
+		}
 	},
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	gophelper "../Gophelper"
+	middleware "../Middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -21,9 +22,11 @@ var Kitty = &gophelper.Command{
 	Name:    "🐈 Kitty",
 	Aliases: []string{"kitty", "kittie", "cat"},
 
+	Category: gophelper.CATEGORY_FUN,
+
 	Description: "random pics of cute kitties",
 
-	RateLimit: gophelper.RateLimit{
+	RateLimit: middleware.RateLimit{
 		Limit:    1,
 		Duration: time.Second * 5,
 	},
@@ -86,10 +89,13 @@ var Kitty = &gophelper.Command{
 		message, err := session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
+			_, err = session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
 		} else {
-			session.MessageReactionAdd(message.ChannelID, message.ID, "❤️")
-			session.MessageReactionAdd(message.ChannelID, message.ID, "🐈")
+			err = session.MessageReactionAdd(message.ChannelID, message.ID, "🐈")
+		}
+
+		if err != nil {
+			fmt.Println("Error on kitty command when reacting/sending message")
 		}
 	},
 }
