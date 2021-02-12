@@ -19,7 +19,7 @@ var (
 	HelpStringCategories = make(map[string]*gophelper.Category)
 )
 
-// HelpInitMiddleware prrt
+// HelpInitMiddlware middleware for adding help for given command
 func HelpInitMiddlware(context *gophelper.CommandContext) (bool, func(*gophelper.CommandContext)) {
 	addHelpForCommand(context.Command, &context.Router.Config.Language)
 	generateMainEmbed(&context.Router.Config.Language)
