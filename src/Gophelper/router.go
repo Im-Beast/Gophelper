@@ -17,36 +17,77 @@ type Router struct {
 	Config *Config
 
 	Commands []*Command
+
+	Categories []*Category
 }
+
+var routerMiddleware = make(map[string][]Middleware)
 
 // AddCmd Adds command to router
-func (router *Router) AddCmd(cmd *Command) {
-	for _, langCmd := range router.Config.Language.Commands {
-		if langCmd.ID == cmd.ID {
-			cmd.LanguageSettings = langCmd
-			cmd.Description = langCmd.Description
-			break
+func (router *Router) AddCommand(command *Command) {
+	router.RefreshCommand(command)
+
+	if len(routerMiddleware["AddCommand"]) > 0 {
+		for _, middleware := range routerMiddleware["AddCommand"] {
+			middleware(&CommandContext{Command: command, Router: router})
 		}
 	}
 
-	router.Commands = append(router.Commands, cmd)
+	router.Commands = append(router.Commands, command)
 }
 
-// RefreshCommands refreshes commands data
+// RemoveCmd returns function that removes command from maps
+func (router *Router) RemoveCommand(command *Command) {
+	if len(routerMiddleware["RemoveCommand"]) > 0 {
+		for _, middleware := range routerMiddleware["RemoveCommand"] {
+			middleware(&CommandContext{Command: command, Router: router})
+		}
+	}
+
+	for i, cmd := range router.Commands {
+		if cmd == command {
+			router.Commands = append(router.Commands[:i], router.Commands[i+1:]...)
+			return
+		}
+	}
+}
+
+// RefreshCategories refreshes all categories
+func (router *Router) RefreshCategories() {
+	for _, category := range router.Categories {
+		category.Description = router.Config.Language.Categories[category.Name].Description
+	}
+}
+
+// RefreshCommand refreshes given command
+func (router *Router) RefreshCommand(command *Command) {
+	if len(routerMiddleware["RefreshCommand"]) > 0 {
+		for _, middleware := range routerMiddleware["RefreshCommand"] {
+			middleware(&CommandContext{Command: command, Router: router})
+		}
+	}
+
+	commandLanguageSettings := router.Config.Language.Commands[command.ID]
+
+	command.LanguageSettings = commandLanguageSettings
+	command.Description = commandLanguageSettings.Description
+}
+
+// RefreshCommands does RefreshCommand to all commands in router
 func (router *Router) RefreshCommands() {
-	for _, langCmd := range router.Config.Language.Commands {
-		for _, cmd := range router.Commands {
-			if langCmd.ID == cmd.ID {
-				cmd.LanguageSettings = langCmd
-				cmd.Description = langCmd.Description
-			}
-		}
+	for _, command := range router.Commands {
+		router.RefreshCommand(command)
 	}
 }
 
-// AddMiddleware Adds middleware to router
+// AddMiddleware Adds middleware when executing command to router
 func (router *Router) AddMiddleware(middleware Middleware) {
 	router.Middleware = append(router.Middleware, middleware)
+}
+
+// AddRouterMiddleware Adds middleware to router on specified event
+func (router *Router) AddRouterMiddleware(event string, middleware Middleware) {
+	routerMiddleware[event] = append(routerMiddleware[event], middleware)
 }
 
 // Init Initializes router
@@ -104,7 +145,7 @@ func (router *Router) handler(session *discordgo.Session, event *discordgo.Messa
 				Event:  event,
 			}
 
-			command.run(&context)
+			go command.run(&context)
 			break
 		}
 	}
