@@ -1,8 +1,10 @@
-package gophelper
+package middleware
 
 import (
 	"fmt"
 	"time"
+
+	gophelper "../Gophelper"
 )
 
 // RateLimit Structure for command to configure their own rate limit timings
@@ -19,10 +21,10 @@ type RateLimiter struct {
 	CooldownMap    map[string]int64
 }
 
-var rateLimiters = make(map[string]map[*Command]RateLimiter)
+var rateLimiters = make(map[string]map[*gophelper.Command]RateLimiter)
 
 // RateLimiterMiddleware Middleware that checks user rate limit
-func RateLimiterMiddleware(context *CommandContext) (bool, func(*CommandContext)) {
+func RateLimiterMiddleware(context *gophelper.CommandContext) (bool, func(*gophelper.CommandContext)) {
 	command := context.Command
 	authorID := context.Event.Author.ID
 
@@ -30,7 +32,7 @@ func RateLimiterMiddleware(context *CommandContext) (bool, func(*CommandContext)
 	session := context.Session
 
 	if rateLimiters[authorID] == nil {
-		rateLimiters[authorID] = make(map[*Command]RateLimiter)
+		rateLimiters[authorID] = make(map[*gophelper.Command]RateLimiter)
 	}
 
 	rateLimiter := rateLimiters[authorID][command]
@@ -50,8 +52,8 @@ func RateLimiterMiddleware(context *CommandContext) (bool, func(*CommandContext)
 	cooldownTime := rateLimiter.CooldownMap[authorID]
 
 	if cooldownTime > now {
-		return false, func(context *CommandContext) {
-			session.ChannelMessageSend(context.Event.ChannelID, fmt.Sprintf(routerLanguage.RateLimitError, cooldownTime-now))
+		return false, func(context *gophelper.CommandContext) {
+			session.ChannelMessageSend(context.Event.ChannelID, fmt.Sprintf(routerLanguage.Errors.RateLimit, cooldownTime-now))
 		}
 	} else if now-rateLimiter.LastRequestMap[authorID] >= int64(command.RateLimit.Duration.Seconds()) {
 		rateLimiter.CmdCountMap[authorID] = 0
