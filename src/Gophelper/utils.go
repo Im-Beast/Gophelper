@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 // IsMention returns whether given string is mention <@...>/<@!...>
@@ -69,5 +71,41 @@ func ClampInt(num int, min int, max int) int {
 		return max
 	default:
 		return num
+	}
+}
+
+// GetMemberPermissions Gets Member Permission
+func GetMemberPermissions(roles []*discordgo.Role, member *discordgo.Member) int64 {
+	var permissions int64
+
+	for _, mRole := range member.Roles {
+		for _, gRole := range roles {
+			if gRole.ID != mRole {
+				continue
+			}
+
+			permissions |= gRole.Permissions
+		}
+	}
+
+	return permissions
+}
+
+// IsNSFW returns whether channel with given channelID has enabled NSFW
+func IsNSFW(session *discordgo.Session, channelID string) bool {
+	channel, err := session.Channel(channelID)
+	if err != nil {
+		return false
+	}
+	return channel.NSFW
+}
+
+// GetStringVal if string str is not set it returns var notSet, if its set it returns var str
+func GetStringVal(str string, notSet string) string {
+	switch {
+	case str == "":
+		return notSet
+	default:
+		return str
 	}
 }
