@@ -1,8 +1,8 @@
 {
     "errors": {
-        "messsageSendErrror": "Nie udało się wysłać wiadomości",
+        "messsageSend": "Nie udało się wysłać wiadomości",
         "tooFewPermissions": "Nie masz wystarczających permisji by używać tej komendy",
-        "rateLimitError": "Używasz tej komendy za czesto, sprobuj ponownie za %d sekundy"
+        "rateLimit": "Używasz tej komendy za czesto, sprobuj ponownie za %d sekundy"
     },
 
     "funFacts": [
@@ -22,9 +22,26 @@
         "Niektóre plemiona tubylcze nie mają kontaktu z nowoczesną cywilizacją."
     ],
 
-    "commands": [
-        {
-            "id": "8Ball",
+    "categories": {
+        "Miscellaneous": {
+            "Description": "Inne rzeczy"
+        },
+        "Bot config": {
+            "Description": "Komendy związane z konfiguracją bota"
+        },
+        "Fun": {
+            "Description": "Heh, śmieszne"
+        },
+        "Moderation": {
+            "Description": "Geng geng"
+        },
+        "Games": {
+            "Description": "Proste gry przeciwko botowi"
+        }
+    },
+
+    "commands": {
+        "8Ball": {
             "description": "Powiem ci prawdę",
             "answers": [
                 "Jeszcze jak!",
@@ -40,57 +57,62 @@
             ],
             "noArgumentsMessage": "Musisz sie mnie o cos zapytac"
         },
-        {
-            "id": "Doggie",
+        "Doggie": {
             "description": "Słodkie pieski",
             "response": {
                 "mention": "Masz pieska dla %s",
                 "nonMention": "Masz pieska"
             }
         },
-        {
-            "id": "Kitty",
+        "Kitty": {
             "description": "Słodkie kotki",
             "response": {
                 "mention": "Masz kotka dla %s",
                 "nonMention": "Masz kotka"
             }
         },
-        {
-            "id": "Hug",
+        "Hug": {
             "description": "Przytulasy",
             "response": {
                 "mention": "Masz przytulasa dla %s",
                 "nonMention": "Masz przytulasa"
             }
-        }, {
-            "id": "Kiss",
+        },
+        "Kiss": {
             "description": "Całusy",
             "response": {
                 "mention": "Masz całusa dla %s",
                 "nonMention": "Masz całusa"
             }
-        }, {
-            "id": "Waifu",
+        }, 
+        "Waifu": {
             "description": "Jakieś dziwne anime dziewczynki",
             "response": {
                 "mention": "Masz waifu dla %s",
                 "nonMention": "Masz waifu"
             }
-        }, {
-            "id": "Hentai",
+        }, 
+        "Hentai": {
             "description": "Po prostu anime bajki"
-        }, {
-            "id": "Pet",
+        }, 
+        "Pet": {
             "description": "Ciapanie po główce",
             "response": {
                 "mention": "Masz glaskanko dla %s",
                 "nonMention": "Pat pat pat"
             }
-        }, {
-            "id": "Help",
+        }, 
+        "Help": {
             "description": "Daj sobie pomóc",
+            
             "embed": {
+                "main": {
+                    "title": "Pomoc",
+                    "description": "Użyj `help [kategoria]` lub naciśnij odpowiednie guziki, żeby pokazać pomoc dla danej kategorii"
+                },
+
+                "categoryTitle": "Pomoc dla kategorii %s",
+
                 "name": "Nazwa",
                 "noName": "Brak nazwy",
 
@@ -99,7 +121,8 @@
 
                 "usage": "Sposób użycia",
 
-                "aliases": "Aliasy"
+                "aliases": "Aliasy",
+                "noAliases": "Brak aliasów"
             },
 
             "page": "Strona",
@@ -108,11 +131,11 @@
                 "title": "Komenda nie została znaleziona",
                 "message": "Komenda którą próbowałeś znaleźć nie isntieje"
             }
-        }, {
-            "id": "Ping",
+        }, 
+        "Ping": {
             "description": "Po prostu pong!"
-        }, {
-            "id": "PingPong",
+        }, 
+        "PingPong": {
             "description": "Zagraj se w pingponga",
             "tooManyMatches": "Maksymalna liczba punktow na gre to %d",
             "win": {
@@ -121,13 +144,13 @@
                 "message": "wygrał w ping ponga"
             },
             "scoreboardMessage": "Lista punktów"
-        }, {
-            "id": "Stats",
+        }, 
+        "Stats": {
             "description": "Daje ci informacje o użytkowniku",
             "title": "Statystyki dla użytkownika %s#%s",
             "creationDate": "Data założenia konta",
             "joinDate": "Data dołączenia na serwer",
             "userNotFound": "Ten użytkownik nie istnieje bądź nie jest na tym serwerze"
         }
-    ]
+    }
 }

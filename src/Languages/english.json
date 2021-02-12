@@ -1,13 +1,13 @@
 {
     "errors": {
-        "messsageSendErrror": "Sending message failed.",
+        "messsageSend": "Sending message failed.",
         "tooFewPermissions": "You don't have enough permissions to use this command.",
-        "rateLimitError": "You are sending this command too often, try again in %d seconds"
+        "rateLimit": "You are sending this command too often, try again in %d seconds"
     },
 
     "funFacts": [
         "The raccoon can fit in your ass.",
-        "Your snot fly at a speed of ~ 44 km/h when you sneeze.",
+        "Your snot fly at a speed of ~44 km/h when you sneeze.",
         "The United States has no official language.",
         "A cockroach can live for several weeks without a head. It will eventually starve to death.",
         "Galileo's middle finger is stored in the Science Museum in Florence.",
@@ -21,9 +21,27 @@
         "There are more liquor stores in **Bydgoszcz** than in the rest of Norway."
     ],
 
-    "commands": [
-        {
-            "id": "8Ball",
+    "categories": {
+        "Miscellaneous": {
+            "Description": "Other stuff"
+        },
+        "Bot config": {
+            "Description": "Bot config related commands"
+        },
+        "Fun": {
+            "Description": "Haha funni"
+        },
+        "Moderation": {
+            "Description": "Gang gang"
+        },
+        "Games": {
+            "Description": "Simple games vs bot"
+        }
+    },
+
+    "commands": {
+        "8Ball" :{
+            "id": "",
             "description": "I'll tell you truth",
             "answers": [
                 "Yes!",
@@ -39,57 +57,61 @@
             ],
             "noArgumentsMessage": "You need to ask me something, dont ya?"
         },
-        {
-            "id": "Doggie",
+        "Doggie": {
             "description": "Cute doggies",
             "response": {
                 "mention": "Here's cute doggy for %s",
                 "nonMention": "Cute doggie for u!"
             }
         },
-        {
-            "id": "Kitty",
+        "Kitty": {
             "description": "Small cuties",
             "response": {
                 "mention": "Here's cute kitty for ya boi %s",
                 "nonMention": "Look at that kitty i got for you"
             }
         },
-        {
-            "id": "Hug",
+        "Hug": {
             "description": "Hugs",
             "response": {
                 "mention": "Big hug for %s",
                 "nonMention": "Here's a hug for you"
             }
-        }, {
-            "id": "Kiss",
+        }, 
+        "Kiss": {
             "description": "Kisses :*",
             "response": {
                 "mention": "Kiss for %s :*",
                 "nonMention": "Kiss for you"
             }
-        }, {
-            "id": "Waifu",
+        }, 
+        "Waifu": {
             "description": "Some weird anime girls",
             "response": {
                 "mention": "Here's waifu for %s",
                 "nonMention": "Here's your waifu"
             }
-        }, {
-            "id": "Hentai",
+        }, 
+        "Hentai": {
             "description": "Just some weird anime cartoons"
-        }, {
-            "id": "Pet",
+        }, 
+        "Pet": {
             "description": "Head patting",
             "response": {
                 "mention": "Pat pat %s",
                 "nonMention": "Pat pat pat"
             }
-        }, {
-            "id": "Help",
+        }, 
+        "Help": {
             "description": "Get some help",
             "embed": {
+                "main": {
+                    "title": "Help",
+                    "description": "Use `help [category]` or press adequate button to show help list for given category"
+                },
+
+                "categoryTitle": "Help for %s category",
+
                 "name": "Name",
                 "noName": "No name",
 
@@ -98,7 +120,8 @@
 
                 "usage": "Usage",
 
-                "aliases": "Aliases"
+                "aliases": "Aliases",
+                "noAliases": "No aliases"
             },
 
             "page": "Page",
@@ -107,11 +130,11 @@
                 "title": "Command not found",
                 "message": "Command you requested does not exist"
             }
-        }, {
-            "id": "Ping",
+        }, 
+        "Ping": {
             "description": "Just pong!"
-        }, {
-            "id": "PingPong",
+        }, 
+        "PingPong": {
             "description": "Play some pingpong",
             "tooManyMatches": "Max points per game is %d",
             "win": {
@@ -120,14 +143,13 @@
                 "message": "won ping pong game"
             },
             "scoreboardMessage": "Scoreboard"
-        }, {
-            "id": "Stats",
+        },
+        "Stats": {
             "description": "Gives you information about user",
             "title": "Stats for user %s#%s",
             "creationDate": "Account creation date",
             "joinDate": "Server join date",
             "userNotFound": "This user either doesn't exist or (s)he's not on this server"
         }
-    ]
-
+    }
 }
