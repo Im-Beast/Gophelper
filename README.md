@@ -1,5 +1,5 @@
 # Gophelper
-[(![Go report](https://goreportcard.com/badge/github.com/Im-Beast/Gophelper)](https://goreportcard.com/report/github.com/Im-Beast/Gophelper)
+[![Go report](https://goreportcard.com/badge/github.com/Im-Beast/Gophelper)](https://goreportcard.com/report/github.com/Im-Beast/Gophelper)
 
 Simple bot written in Golang using [DiscordGo](https://github.com/bwmarrin/discordgo).
 
@@ -45,4 +45,4 @@ Here's the list of some of them: <br>
 * Creators of images used in kittie/doggie/kiss/hug/waifu and other commands :D
 
 ## Media
-![Gophelper](github.com/Im-Beast/Gophelper/docs/showcase.gif)
+![Gophelper](https://github.com/Im-Beast/Gophelper/blob/main/docs/showcase.gif)
