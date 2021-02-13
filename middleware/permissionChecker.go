@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+
 	gophelper "github.com/Im-Beast/Gophelper/internal"
 	utils "github.com/Im-Beast/Gophelper/utils"
 )
@@ -8,7 +10,6 @@ import (
 // PermissionCheckMiddleware is middleware that confirms whether user that executed command actually has enough permissions to use it
 func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*gophelper.CommandContext)) {
 	session := context.Session
-	member := context.Event.Member
 	message := context.Event
 	command := context.Command
 
@@ -17,22 +18,34 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 	if command.NSFWOnly {
 		if utils.IsNSFW(session, message.ChannelID) {
 			return false, func(*gophelper.CommandContext) {
-				session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.NSFWOnly)
+				_, err := session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.NSFWOnly)
+				if err != nil {
+					fmt.Println("Error while sending too few permissions message")
+				}
 			}
 		}
-
 	}
 
 	if command.NeededPermissions == 0 {
 		return true, nil
 	}
 
-	roles, _ := session.GuildRoles(message.GuildID)
-	memberPermissions := utils.GetMemberPermissions(roles, member)
+	permissions, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	if err != nil {
+		fmt.Println("Error while getting permissions:", err.Error(), "| fallbacking to deprecated func...")
+		permissions, err = session.UserChannelPermissions(message.Author.ID, message.ChannelID)
+		if err != nil {
+			fmt.Println("Failed getting permissions")
+			permissions = 0
+		}
+	}
 
-	if memberPermissions&command.NeededPermissions == 0 {
+	if permissions&command.NeededPermissions == 0 {
 		return false, func(*gophelper.CommandContext) {
-			session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.TooFewPermissions)
+			_, err := session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.TooFewPermissions)
+			if err != nil {
+				fmt.Println("Error while sending too few permissions message")
+			}
 		}
 	}
 

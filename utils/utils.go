@@ -74,23 +74,6 @@ func ClampInt(num int, min int, max int) int {
 	}
 }
 
-// GetMemberPermissions Gets Member Permission
-func GetMemberPermissions(roles []*discordgo.Role, member *discordgo.Member) int64 {
-	var permissions int64
-
-	for _, mRole := range member.Roles {
-		for _, gRole := range roles {
-			if gRole.ID != mRole {
-				continue
-			}
-
-			permissions |= gRole.Permissions
-		}
-	}
-
-	return permissions
-}
-
 // IsNSFW returns whether channel with given channelID has enabled NSFW
 func IsNSFW(session *discordgo.Session, channelID string) bool {
 	channel, err := session.Channel(channelID)
