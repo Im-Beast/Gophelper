@@ -40,7 +40,7 @@ var LanguageSwitcher = &gophelper.Command{
 
 		config := context.Router.Config
 
-		err := config.LoadLanguage("../Languages/" + arguments[0])
+		err := config.LoadLanguage("configs/languages/" + arguments[0])
 		context.Router.RefreshCommands()
 		context.Router.RefreshCategories()
 
