@@ -25,20 +25,12 @@ var (
 func main() {
 	discord, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
 
-	defer func() {
-		sc := make(chan os.Signal, 1)
-		signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
-		<-sc
-
-		fmt.Println("\rDisabling bot")
-
-		discord.Close()
-	}()
-
 	if err != nil {
 		fmt.Println("Some error happened while launching bot:", err)
 		return
 	}
+
+	discord.StateEnabled = true
 
 	err = discord.Open()
 
@@ -54,6 +46,16 @@ func main() {
 	registerCommands()
 
 	router.Init(discord)
+
+	defer func() {
+		sc := make(chan os.Signal, 1)
+		signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
+		<-sc
+
+		fmt.Println("\rDisabling bot")
+
+		discord.Close()
+	}()
 }
 
 func registerCategories() {
