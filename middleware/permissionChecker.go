@@ -30,14 +30,10 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 		return true, nil
 	}
 
-	permissions, err := session.State.UserChannelPermissions(message.Author.ID, message.ChannelID)
+	permissions, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
-		fmt.Println("Error while getting permissions:", err.Error(), "| fallbacking to deprecated func...")
-		permissions, err = session.UserChannelPermissions(message.Author.ID, message.ChannelID)
-		if err != nil {
-			fmt.Println("Failed getting permissions")
-			permissions = 0
-		}
+		fmt.Println("Failed getting perms")
+		permissions = 0
 	}
 
 	if permissions&command.NeededPermissions == 0 {
