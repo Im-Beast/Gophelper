@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	gophelper "../Gophelper"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	utils "github.com/Im-Beast/Gophelper/utils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -34,7 +36,7 @@ func generateMainEmbed(language *gophelper.LanguageConfig) {
 		Description: helpLanguage.Embed.Main.Description,
 		Color:       0x007d9c,
 		Footer: &discordgo.MessageEmbedFooter{
-			Text: gophelper.RandomStringElement(language.FunFacts),
+			Text: utils.RandomStringElement(language.FunFacts),
 		},
 	}
 
@@ -94,15 +96,15 @@ func getBasicEmbed(category *gophelper.Category, language *gophelper.LanguageCon
 		Description: category.Description,
 		Color:       0x007d9c,
 		Footer: &discordgo.MessageEmbedFooter{
-			Text: gophelper.RandomStringElement(language.FunFacts),
+			Text: utils.RandomStringElement(language.FunFacts),
 		},
 	}
 }
 func getCommandEmbed(command *gophelper.Command, language *gophelper.CommandConfig) *discordgo.MessageEmbed {
 	embed := &discordgo.MessageEmbed{}
 
-	embed.Title = gophelper.GetStringVal(command.Name, language.Embed.NoName)
-	embed.Description = gophelper.GetStringVal(command.Description, language.Embed.NoName)
+	embed.Title = utils.GetStringVal(command.Name, language.Embed.NoName)
+	embed.Description = utils.GetStringVal(command.Description, language.Embed.NoName)
 
 	if command.Usage != "" {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
@@ -118,17 +120,17 @@ func getCommandEmbedFields(command *gophelper.Command, language *gophelper.Comma
 	return []*discordgo.MessageEmbedField{
 		{
 			Name:   language.Embed.Name,
-			Value:  fmt.Sprintf("```%s```", gophelper.GetStringVal(command.Name, language.Embed.NoName)),
+			Value:  fmt.Sprintf("```%s```", utils.GetStringVal(command.Name, language.Embed.NoName)),
 			Inline: true,
 		},
 		{
 			Name:   language.Embed.Description,
-			Value:  fmt.Sprintf("```%s```", gophelper.GetStringVal(command.Description, language.Embed.NoDescription)),
+			Value:  fmt.Sprintf("```%s```", utils.GetStringVal(command.Description, language.Embed.NoDescription)),
 			Inline: true,
 		},
 		{
 			Name:   language.Embed.Aliases,
-			Value:  fmt.Sprintf("```%s```", gophelper.GetStringVal(strings.Join(command.Aliases, ", "), language.Embed.NoAliases)),
+			Value:  fmt.Sprintf("```%s```", utils.GetStringVal(strings.Join(command.Aliases, ", "), language.Embed.NoAliases)),
 			Inline: true,
 		},
 	}

@@ -6,8 +6,9 @@ import (
 	"strings"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -53,8 +54,8 @@ var Pet = &gophelper.Command{
 			isTag = true
 			userID = arguments[0]
 
-			if gophelper.IsMention(userID) {
-				userID = gophelper.MentionToID(userID)
+			if utils.IsMention(userID) {
+				userID = utils.MentionToID(userID)
 			}
 		}
 
@@ -97,6 +98,7 @@ var Pet = &gophelper.Command{
 
 		if err != nil {
 			_, err = session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.MessageSend)
+			fmt.Println("Failed to send message")
 		} else {
 			err = session.MessageReactionAdd(message.ChannelID, message.ID, "✋")
 		}

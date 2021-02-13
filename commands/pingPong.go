@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -54,8 +55,8 @@ var PingPong = &gophelper.Command{
 		pointLimit := 15
 		delay := time.Millisecond * 1000
 
-		if len(arguments) > 0 && gophelper.IsNumber(arguments[0]) {
-			num := gophelper.StringToInt(arguments[0])
+		if len(arguments) > 0 && utils.IsNumber(arguments[0]) {
+			num := utils.StringToInt(arguments[0])
 			if num <= pointLimit {
 				winPoints = num
 			} else {
@@ -67,8 +68,8 @@ var PingPong = &gophelper.Command{
 			}
 		}
 
-		if len(arguments) > 1 && gophelper.IsNumber(arguments[1]) {
-			delay = time.Millisecond * time.Duration(gophelper.StringToInt(arguments[1]))
+		if len(arguments) > 1 && utils.IsNumber(arguments[1]) {
+			delay = time.Millisecond * time.Duration(utils.StringToInt(arguments[1]))
 		}
 
 		userName := message.Member.Nick

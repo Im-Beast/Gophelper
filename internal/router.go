@@ -3,6 +3,7 @@ package gophelper
 import (
 	"strings"
 
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -106,7 +107,7 @@ func (router *Router) handler(session *discordgo.Session, event *discordgo.Messa
 	Prefix := ""
 
 	for _, prefix := range router.Prefixes {
-		if MatchesPrefix(message.Content, prefix, router.CaseSensitive) {
+		if utils.MatchesPrefix(message.Content, prefix, router.CaseSensitive) {
 			Prefix = prefix
 			break
 		}
@@ -125,9 +126,9 @@ func (router *Router) handler(session *discordgo.Session, event *discordgo.Messa
 
 	for _, cmd := range router.Commands {
 		for _, alias := range cmd.Aliases {
-			argumentString := argumentsString[:ClampInt(len(alias)+1, 0, len(argumentsString))]
+			argumentString := argumentsString[:utils.ClampInt(len(alias)+1, 0, len(argumentsString))]
 
-			if Matches(argumentString, alias, cmd.CaseSensitive) || Matches(argumentString, alias+" ", cmd.CaseSensitive) {
+			if utils.Matches(argumentString, alias, cmd.CaseSensitive) || utils.Matches(argumentString, alias+" ", cmd.CaseSensitive) {
 				arguments = arguments[len(strings.Fields(alias)):]
 				command = cmd
 				break

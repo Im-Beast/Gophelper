@@ -1,4 +1,4 @@
-package gophelper
+package utils
 
 import (
 	"math/rand"

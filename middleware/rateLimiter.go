@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	gophelper "../Gophelper"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
 )
 
 // RateLimit Structure for command to configure their own rate limit timings
@@ -37,7 +37,7 @@ func RateLimiterMiddleware(context *gophelper.CommandContext) (bool, func(*gophe
 
 	rateLimiter := rateLimiters[authorID][command]
 
-	if rateLimiter.Initialized == false {
+	if !rateLimiter.Initialized {
 		rateLimiters[authorID][command] = RateLimiter{
 			Initialized:    true,
 			CmdCountMap:    make(map[string]int),
@@ -53,7 +53,10 @@ func RateLimiterMiddleware(context *gophelper.CommandContext) (bool, func(*gophe
 
 	if cooldownTime > now {
 		return false, func(context *gophelper.CommandContext) {
-			session.ChannelMessageSend(context.Event.ChannelID, fmt.Sprintf(routerLanguage.Errors.RateLimit, cooldownTime-now))
+			_, err := session.ChannelMessageSend(context.Event.ChannelID, fmt.Sprintf(routerLanguage.Errors.RateLimit, cooldownTime-now))
+			if err != nil {
+				fmt.Println("Failed sending rateLimit message")
+			}
 		}
 	} else if now-rateLimiter.LastRequestMap[authorID] >= int64(command.RateLimit.Duration.Seconds()) {
 		rateLimiter.CmdCountMap[authorID] = 0

@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	gophelper "../Gophelper"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	utils "github.com/Im-Beast/Gophelper/utils"
 )
 
 // PermissionCheckMiddleware is middleware that confirms whether user that executed command actually has enough permissions to use it
@@ -14,7 +15,7 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 	routerLanguage := context.Router.Config.Language
 
 	if command.NSFWOnly {
-		if gophelper.IsNSFW(session, message.ChannelID) {
+		if utils.IsNSFW(session, message.ChannelID) {
 			return false, func(*gophelper.CommandContext) {
 				session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.NSFWOnly)
 			}
@@ -27,7 +28,7 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 	}
 
 	roles, _ := session.GuildRoles(message.GuildID)
-	memberPermissions := gophelper.GetMemberPermissions(roles, member)
+	memberPermissions := utils.GetMemberPermissions(roles, member)
 
 	if memberPermissions&command.NeededPermissions == 0 {
 		return false, func(*gophelper.CommandContext) {

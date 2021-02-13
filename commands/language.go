@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -46,6 +46,7 @@ var LanguageSwitcher = &gophelper.Command{
 
 		if err != nil {
 			_, err = session.ChannelMessageSend(message.ChannelID, "Something happened while loading this config file, are you sure it exists?")
+			fmt.Println("Failed on language command when loading language file")
 		} else {
 			_, err = session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("Successfully changed language config file to %s", arguments[0]))
 		}

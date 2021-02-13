@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
 )
 
 // Hentai cartoons

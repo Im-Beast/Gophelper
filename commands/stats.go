@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -40,8 +41,8 @@ var Stats = &gophelper.Command{
 		if len(arguments) > 0 {
 			memberID = arguments[0]
 
-			if gophelper.IsMention(memberID) {
-				memberID = gophelper.MentionToID(memberID)
+			if utils.IsMention(memberID) {
+				memberID = utils.MentionToID(memberID)
 			}
 		}
 
@@ -77,7 +78,7 @@ var Stats = &gophelper.Command{
 				},
 			},
 			Footer: &discordgo.MessageEmbedFooter{
-				Text: gophelper.RandomStringElement(routerLanguage.FunFacts),
+				Text: utils.RandomStringElement(routerLanguage.FunFacts),
 			},
 		}
 

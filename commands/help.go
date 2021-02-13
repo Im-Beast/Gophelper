@@ -5,8 +5,9 @@ import (
 	"strings"
 	"time"
 
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -64,9 +65,9 @@ var Help = &gophelper.Command{
 
 			switch event.Emoji.Name {
 			case "⬅️":
-				page = gophelper.ClampInt(page-1, 0, pages-1)
+				page = utils.ClampInt(page-1, 0, pages-1)
 			case "➡️":
-				page = gophelper.ClampInt(page+1, 0, pages-1)
+				page = utils.ClampInt(page+1, 0, pages-1)
 			case "⬇️":
 				_, err = session.ChannelMessageEditEmbed(reactMessage.ChannelID, reactMessage.ID, middleware.MainHelpEmbed)
 				if err != nil {
@@ -137,8 +138,8 @@ var Help = &gophelper.Command{
 		} else {
 			name := arguments[0]
 
-			if len(arguments) > 1 && gophelper.IsNumber(arguments[1]) {
-				page = gophelper.StringToInt(arguments[1]) - 1 // count from 1 for user conveniency
+			if len(arguments) > 1 && utils.IsNumber(arguments[1]) {
+				page = utils.StringToInt(arguments[1]) - 1 // count from 1 for user conveniency
 			}
 
 			embed, _ = getCategoryEmbed(name, page, &language)

@@ -6,9 +6,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	commands "../Commands"
-	gophelper "../Gophelper"
-	middleware "../Middleware"
+	"github.com/Im-Beast/Gophelper/commands"
+
+	gophelper "github.com/Im-Beast/Gophelper/internal"
+	middleware "github.com/Im-Beast/Gophelper/middleware"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -17,7 +18,7 @@ var (
 	router = gophelper.Router{
 		Prefixes:      []string{"go"},
 		CaseSensitive: false,
-		Config:        gophelper.LoadConfig("config.json", "../Languages/english.json"),
+		Config:        gophelper.LoadConfig("configs/bot.json", "configs/languages/english.json"),
 	}
 )
 
