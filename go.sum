@@ -1,3 +1,5 @@
+github.com/ajanicij/goduckgo v0.0.0-20150205231829-61f9a275272f h1:FkZIeRvGe4AcF/K4UKsuvyTvRYhMCGwjpoIByl6t61I=
+github.com/ajanicij/goduckgo v0.0.0-20150205231829-61f9a275272f/go.mod h1:KeRS5OFtXgX0i1YVwrl00Rm70FdNSJlzpvj3p+1qjx8=
 github.com/bwmarrin/discordgo v0.23.2 h1:BzrtTktixGHIu9Tt7dEE6diysEF9HWnXeHuoJEt2fH4=
 github.com/bwmarrin/discordgo v0.23.2/go.mod h1:c1WtWUGN6nREDmzIpyTp/iD3VYt4Fpx+bVyfBG7JE+M=
 github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
