@@ -89,6 +89,7 @@ func registerCommands() {
 	router.AddCommand(commands.Hentai)
 	router.AddCommand(commands.Doggie)
 	router.AddCommand(commands.PingPong)
+	router.AddCommand(commands.Pinterest)
 	router.AddCommand(commands.EightBall)
 	router.AddCommand(commands.LanguageSwitcher)
 }
