@@ -28,8 +28,11 @@ var Ping = &gophelper.Command{
 		session := context.Session
 		message := context.Event
 
-		messageTime, _ := message.Timestamp.Parse()
-		timeDiff := (time.Now().UnixNano() - messageTime.UnixNano()) / 1000000
+		var timeDiff, timeDiff2 int64
+		var msgTime, msgTime2 time.Time
+
+		msgTime, _ = message.Timestamp.Parse()
+		timeDiff = time.Since(msgTime).Milliseconds()
 
 		msg, err := session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("🏓 Pong\n Discord: `%d ms`", timeDiff))
 
@@ -37,8 +40,8 @@ var Ping = &gophelper.Command{
 			fmt.Println("Error on ping command when sending message")
 		}
 
-		messageTime2, _ := msg.Timestamp.Parse()
-		timeDiff2 := (messageTime2.UnixNano() - messageTime.UnixNano()) / 1000000
+		msgTime2, _ = msg.Timestamp.Parse()
+		timeDiff2 = msgTime2.Sub(msgTime).Milliseconds()
 
 		_, err = session.ChannelMessageEdit(msg.ChannelID, msg.ID, fmt.Sprintf("🏓 Pong\n Discord: `%d ms`\n Took: `%d ms`", timeDiff, timeDiff2))
 
