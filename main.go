@@ -23,29 +23,29 @@ var (
 )
 
 func main() {
-	discord, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
+	bot, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
 
 	if err != nil {
 		fmt.Println("Some error happened while launching bot:", err)
 		return
 	}
 
-	discord.StateEnabled = true
+	bot.StateEnabled = true
 
-	err = discord.Open()
+	err = bot.Open()
 
 	if err != nil {
 		fmt.Println("Failed opening connection", err)
 		return
 	}
 
-	fmt.Printf("Bot %s is up and running\n", discord.State.User.Username)
+	fmt.Printf("Bot %s is up and running\n", bot.State.User.Username)
 
 	registerCategories()
 	registerMiddleware()
 	registerCommands()
 
-	router.Init(discord)
+	router.Init(bot)
 
 	defer func() {
 		sc := make(chan os.Signal, 1)
@@ -53,26 +53,27 @@ func main() {
 		<-sc
 
 		fmt.Println("\rDisabling bot")
-
-		discord.Close()
+		bot.Close()
 	}()
 }
 
 func registerCategories() {
-	router.Categories = []*gophelper.Category{
-		gophelper.CATEGORY_FUN,
-		gophelper.CATEGORY_MISC,
-		gophelper.CATEGORY_MOD,
-		gophelper.CATEGORY_GAMES,
-		gophelper.CATEGORY_CONFIG,
+	var sorted []*gophelper.Category
+
+	for _, strCategory := range router.Config.Commands.Help.Categories {
+		for _, category := range gophelper.CATEGORIES {
+			if category.Name == strCategory {
+				sorted = append(sorted, category)
+			}
+		}
 	}
+
+	router.Categories = sorted
 
 	router.RefreshCategories()
 }
 
 func registerMiddleware() {
-	router.AddRouterMiddleware("RefreshCommand", middleware.HelpInitMiddlware)
-
 	router.AddMiddleware(middleware.RateLimiterMiddleware)
 	router.AddMiddleware(middleware.PermissionCheckMiddleware)
 }

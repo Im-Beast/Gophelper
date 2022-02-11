@@ -1,6 +1,17 @@
 {
-    "prefix": {
-        "prefixes": ["go"],
-        "caseSensitive": false
+  "prefix": {
+    "prefixes": ["go"],
+    "caseSensitive": false
+  },
+  "commands": {
+    "help": {
+      "categories": [
+        "Fun",
+        "Games",
+        "Moderation",
+        "Miscellaneous",
+        "Bot config"
+      ]
     }
+  }
 }

@@ -108,6 +108,12 @@ type (
 			CaseSensitive bool     `json:"caseSensitive"`
 		} `json:"prefix"`
 
+		Commands struct {
+			Help struct {
+				Categories []string `json:"categories"`
+			} `json:"help"`
+		} `json:"commands"`
+
 		Language LanguageConfig `json:"language,omitempty"`
 	}
 )
