@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -36,21 +37,23 @@ var Help = &gophelper.Command{
 		event := context.Event
 		router := context.Router
 		langCfg := context.Router.Config.Language
-		arguments := context.Arguments
+		args := context.Arguments
 		page := 1
 
-		switch args := len(arguments); args {
+		// TODO(Im-Beast): expire handlers after some time
+
+		switch length := len(args); length {
 		case 0:
 			msg, err := session.ChannelMessageSendEmbed(event.ChannelID, getMainHelp(router.Categories, &router.Config.Language))
 
 			if err != nil {
-				fmt.Printf("err: %s", err.Error())
+				log.Printf("Command Help errored while sending main help embed: %s\n", err.Error())
 				return
 			}
 
 			handleMainPageReactions(session, router, event, msg, &langCfg)
 		case 1:
-			embed, err := getStringCommandHelp(arguments[0], router, &langCfg)
+			embed, err := getStringCommandHelp(args[0], router, &langCfg)
 
 			if err == nil {
 				session.ChannelMessageSendEmbed(event.ChannelID, embed)
@@ -58,15 +61,23 @@ var Help = &gophelper.Command{
 			}
 			fallthrough
 		default:
-			category, err := gophelper.StringToCategory(arguments[0])
+			category, err := gophelper.StringToCategory(args[0])
 
 			if err != nil {
-				fmt.Println("invalid category")
+				log.Printf("Command Help errored, category %s have not been found", args[0])
+				_, err = session.ChannelMessageSendEmbed(event.ChannelID, &discordgo.MessageEmbed{
+					Title:       langCfg.Errors.CommandNotFound.Title,
+					Description: langCfg.Errors.CommandNotFound.Message,
+				})
+
+				if err != nil {
+					log.Printf("Command Help errored while sending error message: %s", err.Error())
+				}
 				return
 			}
 
-			if args > 1 && utils.IsNumber(arguments[1]) {
-				page = utils.StringToInt(arguments[1])
+			if length > 1 && utils.IsNumber(args[1]) {
+				page = utils.StringToInt(args[1])
 			}
 
 			pages := getCategoryPages(router, &langCfg)
@@ -216,14 +227,14 @@ func handleCategoryPageReactions(session *discordgo.Session, router *gophelper.R
 		err := session.MessageReactionsRemoveAll(msg.ChannelID, msg.ID)
 
 		if err != nil {
-			fmt.Printf("Failed to remove all emojis")
+			log.Printf("Command Help errored while removing all reactions: %s\n", err)
 		}
 
 		emojis := [3]string{"⬅️", "➡️", "⬇️"}
 		for _, emoji := range emojis {
 			err := session.MessageReactionAdd(msg.ChannelID, msg.ID, emoji)
 			if err != nil {
-				fmt.Printf("Failed to add emoji %s", emoji)
+				log.Printf("Command Help errored while adding %s reaction: %s\n", category.ReactionEmoji, err.Error())
 			}
 		}
 	}()
@@ -237,7 +248,7 @@ func handleCategoryPageReactions(session *discordgo.Session, router *gophelper.R
 		_, err := session.ChannelMessageEditEmbed(msg.ChannelID, msg.ID, embed)
 
 		if err != nil {
-			fmt.Printf("Failed to edit embed message %s\n", err.Error())
+			log.Printf("Command Help errored while editing embed message reaction: %s\n", err)
 		}
 	}
 
@@ -248,7 +259,7 @@ func handleCategoryPageReactions(session *discordgo.Session, router *gophelper.R
 		if event.UserID != session.State.User.ID {
 			err := session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.Name, event.UserID)
 			if err != nil {
-				fmt.Printf("Failed to remove reaction %s", event.Emoji.Name)
+				log.Printf("Command Help errored while removing %s reaction: %s\n", event.Emoji.Name, err)
 			}
 		}
 
@@ -275,7 +286,7 @@ func handleMainPageReactions(session *discordgo.Session, router *gophelper.Route
 	_, err := session.ChannelMessageEditEmbed(msg.ChannelID, msg.ID, getMainHelp(router.Categories, &router.Config.Language))
 
 	if err != nil {
-		fmt.Printf("err: %s", err.Error())
+		log.Printf("Command Help errored while editing message to main help embed: %s\n", err)
 		return
 	}
 
@@ -283,13 +294,13 @@ func handleMainPageReactions(session *discordgo.Session, router *gophelper.Route
 		err = session.MessageReactionsRemoveAll(msg.ChannelID, msg.ID)
 
 		if err != nil {
-			fmt.Printf("Failed to remove all emojis")
+			log.Printf("Command Help errored while removing all reactions: %s\n", err)
 		}
 
 		for _, category := range router.Categories {
 			err := session.MessageReactionAdd(msg.ChannelID, msg.ID, category.ReactionEmoji)
 			if err != nil {
-				fmt.Printf("Couldn't add emoji for category %s", category.Name)
+				log.Printf("Command Help errored while adding %s reaction: %s\n", category.ReactionEmoji, err.Error())
 			}
 		}
 	}()
@@ -299,7 +310,7 @@ func handleMainPageReactions(session *discordgo.Session, router *gophelper.Route
 		if event.UserID != session.State.User.ID {
 			err = session.MessageReactionRemove(event.ChannelID, event.MessageID, event.Emoji.Name, event.UserID)
 			if err != nil {
-				fmt.Printf("Failed to remove reaction %s", event.Emoji.Name)
+				log.Printf("Command Help errored while removing %s reaction: %s\n", event.Emoji.Name, err.Error())
 			}
 		}
 

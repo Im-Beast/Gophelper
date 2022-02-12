@@ -3,14 +3,14 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"math/rand"
-	"net/http"
 	"strings"
 	"time"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
 	middleware "github.com/Im-Beast/Gophelper/middleware"
+	"github.com/Im-Beast/Gophelper/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -31,34 +31,38 @@ var Pinterest = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		message := context.Event.Message
+		msg := context.Event.Message
 		session := context.Session
+		args := context.Arguments
+		lang := context.Router.Config.Language
 
-		arguments := context.Arguments
-
-		if len(arguments) < 1 {
+		if len(args) < 1 {
 			return
 		}
 
-		queryPhrase := strings.Join(arguments, " ")
+		queryPhrase := strings.Join(args, " ")
 
 		images := getPinterestQuery(queryPhrase).ResourceResponse.Data.Results
 
 		if len(images) == 0 {
-			_, err := session.ChannelMessageSend(message.ChannelID, "no images :(")
+			_, err := session.ChannelMessageSendEmbed(msg.ChannelID, &discordgo.MessageEmbed{
+				Title:       lang.Errors.NoResultsFound.Title,
+				Description: lang.Errors.NoResultsFound.Message,
+			})
+
 			if err != nil {
-				fmt.Println("Failed on pinterest command, failed to send error")
+				log.Printf("Command Pinterest errored while sending embed message: %s\n", err.Error())
 			}
 			return
 		}
 
 		img := images[rand.Intn(len(images))]
 
-		_, err := session.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
+		_, err := session.ChannelMessageSendEmbed(msg.ChannelID, &discordgo.MessageEmbed{
 			Title:       img.RichSummary.DisplayName,
 			Description: img.Description,
 			Image: &discordgo.MessageEmbedImage{
-				URL: img.Images["orig"].Url,
+				URL: img.Images[PinterestSizes.Original].Url,
 			},
 			Footer: &discordgo.MessageEmbedFooter{
 				IconURL: "https://s.pinimg.com/webapp/favicon-54a5b2af.png",
@@ -67,39 +71,28 @@ var Pinterest = &gophelper.Command{
 		})
 
 		if err != nil {
-			fmt.Println("Failed to send pinterest image")
+			log.Printf("Command Pinterest errored while sending embed message: %s\n", err.Error())
 		}
 	},
 }
 
-func getWebpageContent(url string) []byte {
-	response, err := http.Get(url)
-
-	if err != nil {
-		return []byte{}
-	}
-
-	defer response.Body.Close()
-
-	html, err := ioutil.ReadAll(response.Body)
-
-	if err != nil {
-		return []byte{}
-	}
-
-	return html
+type Sizes struct {
+	Tiny     string
+	Small    string
+	Medium   string
+	Big      string
+	Huge     string
+	Original string
 }
 
-/*
-	! make enum of that
-	sizes
-		136x136
-		170x
-		236x
-		474x
-		736x
-		orig
-*/
+var PinterestSizes = &Sizes{
+	Tiny:     "136x136",
+	Small:    "170x",
+	Medium:   "236x",
+	Big:      "474x",
+	Huge:     "736x",
+	Original: "orig",
+}
 
 type PinterestResult struct {
 	Description string `json:"description"`
@@ -133,7 +126,7 @@ func getPinterestQuery(query string) *PinterestResponse {
 	query = strings.Join(strings.Fields(query), "_")
 
 	url := `https://www.pinterest.com/resource/BaseSearchResource/get/?source_url=/search/pins/?q=` + query + `&rs=typed&term_meta[]=` + query + `%7Ctyped&data={%22options%22:{%22page_size%22:25,%22query%22:%22` + query + `%22,%22scope%22:%22pins%22,%22bookmarks%22:[%22Y2JVSG81V2sxcmNHRlpWM1J5VFVad1YxWllaR3hpVmxwSldWVmFkMkZXV2xWV2JteFhUVzVTY2xWNlNrdFNhelZaVld4V1YxSlZjR2hYVjNoaFZqQTFWMVZzWkZaaVJuQlBXV3RvUTJWR1drZFZiR1JWWWxWd1dGVnNVa05YUmxwR1kwVmtWV0pHVmpSV2JGcExWbFpPY2s5V1pGTmlXR041Vm1wS01HRXhWWGxUYkdScFUwWktWVlpyVm1GVU1XeFlUVmR3YkZKc1NqRlpNRlV4Vkd4S1ZWSnNiRmROVmtwWVZrZDRZVk5IVmtsUmJGWnBZbXRLU0Zkc1dtRmtNbEpIVm14c2FGSnVRbk5aYTFaM1pVWmFTR1JHVG1wTmExWXpWRlpvUjFkSFNsaGxTRkpXWWtaS1dGVnFSbUZqVmxKeFZHeEdWbFpFUVRWYWExcFhVMWRLTmxWdGVGTk5XRUpIVmxSSmVHTXhVbk5UV0doWVltdEtWbGxyWkZOVVJteFdWbFJHV0ZKck5UQlVWbVJIVmpGS2NtTkVRbGRTUlZwVVdUSnpNVlpyT1ZaV2JGSllVMFZLVWxadGRHRlNhekZYVld4YVlWSnJjSE5WYkZKWFUxWlZlVTFJYUZWaVJuQkhWbTF3VjFkSFNrZFRhMDVoVmpOTk1WVXdXa3RrUjBaR1RsZDRhRTFJUWpSV2Frb3dWVEZKZVZKc1pHcFNiRnBYVm10YVMxVldWbkphUms1cVlrWktNRmt3Vmt0aVIwWTJVbTVvVm1KR1NrUldNbk40WTJzeFJWSnNWbWhoTTBKUlYxZDRWbVZIVWtkWGJrWm9VbXhhYjFSV1duZFhiR1IwWkVWYVVGWnJTbE5WUmxGNFQwVXdlVk5VUWs1U01VVjNWMjB4VW1WV2NIRmlSMmhPVmtkb2NGZFhjRTVsYkhCMFZGaG9VRlpHVlhwVWFrcFRZVlpzTmxkdGFFOWlWV3cxVjFSS1MyRXhiSEZhUjJoUVVrVndjMVJxU2s1bFZUVTJWMWhvVDFaSFpETlhiVEZYWVZVNVJWSlVSbEJTUlVVeFZGUktUMkZyT1VsbFJUbFRWbTFSTkdaRVVUQmFSMGt3VDFSb2FGbFhTWGhQVkUxNVRtcFpOVmxxYkdwT1YwMHpUMGRPYUZscVZteE5iVVUwV1RKVk0wNVhSWHBPTWtsNlQxUlNiVTlIVVhoYVYwMHdUVlJuZVZwVVVUTk5NbEY2V2tkV2FrMXFUamhVYTFaWVprRTlQUT09fFVIbzVUMUZ1V21oTE1ERlpVek5CY2s1RU1XWk5hbFptVEZSR09GbFhTWGhQUkVab1dXcEthVTFYVlRWWmVrNXNXa2RTYWs1RVdUSk9la1pwVFZSak1scHRUbWhQVkVreVRVUkthbHBxV214TlJGcHFXWHBCZDAxRVVtMU9WMWt6VFVSQk0xcEVWbXBOZWtKb1dXMVpOVnBZZUU5U1ZtUTR8N2EzOTVhZTA5NjA0MTJmODRjN2VmZjU0MzFjODc1YTdlMWJiZGE0YTc2YmRjNGM3OGZlY2JhYzI3YjgzMDkyNXxORVd8%22],%22field_set_key%22:%22unauth_react%22,%22no_fetch_context_on_resource%22:false},%22context%22:{}}&_=1613332989706`
-	content := getWebpageContent(url)
+	content := utils.GetWebpageContent(url)
 
 	var response PinterestResponse
 

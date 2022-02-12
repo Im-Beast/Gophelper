@@ -1,155 +1,150 @@
 {
-    "errors": {
-        "messsageSend": "Sending message failed.",
-        "tooFewPermissions": "You don't have enough permissions to use this command.",
-        "rateLimit": "You are sending this command too often, try again in %d seconds"
+  "errors": {
+    "messsageSend": "Sending message failed.",
+    "tooFewPermissions": "You don't have enough permissions to use this command.",
+    "rateLimit": "You are sending this command too often, try again in %d seconds",
+
+    "noResultsFound": {
+      "title": "No results found",
+      "description": "Unfortunately no results have been found :("
     },
-
-    "funFacts": [
-        "The raccoon can fit in your ass.",
-        "Your snot fly at a speed of ~44 km/h when you sneeze.",
-        "The United States has no official language.",
-        "A cockroach can live for several weeks without a head. It will eventually starve to death.",
-        "Galileo's middle finger is stored in the Science Museum in Florence.",
-        "The Spanish word „esposas” means both „handcuffs” and „wifes”.",
-        "There are about 4 „billiards of billiards” bacteria on Earth.",
-        "Oceans contain nearly 200,000 different types of viruses.",
-        "There are about 2,000 storms happening on Earth at any given moment.",
-        "Over a million planets of the Earth would fit into one sun.",
-        "Eel-flavored ice creams are available in Japan.",
-        "The world's largest pumpkin weighted more than a car.",
-        "There are more liquor stores in **Bydgoszcz** than in the rest of Norway."
-    ],
-
-    "categories": {
-        "Miscellaneous": {
-            "Description": "Other stuff"
-        },
-        "Bot config": {
-            "Description": "Bot config related commands"
-        },
-        "Fun": {
-            "Description": "Haha funni"
-        },
-        "Moderation": {
-            "Description": "Gang gang"
-        },
-        "Games": {
-            "Description": "Simple games vs bot"
-        }
+    "invalidCommandArguments": {
+      "title": "Invalid command arguments",
+      "message": "You gave %s command invalid arguments"
     },
-
-    "commands": {
-        "8Ball" :{
-            "id": "",
-            "description": "I'll tell you truth",
-            "answers": [
-                "Yes!",
-                "Definitely!",
-                "Without any problems",
-                "For sure!",
-                "There's no way.",
-                "Nah, it wont work",
-                "I don't think so",
-                "Maybe?",
-                "Who knows",
-                "I dont know, ask someone else"
-            ],
-            "noArgumentsMessage": "You need to ask me something, dont ya?"
-        },
-        "Doggie": {
-            "description": "Cute doggies",
-            "response": {
-                "mention": "Here's cute doggy for %s",
-                "nonMention": "Cute doggie for u!"
-            }
-        },
-        "Kitty": {
-            "description": "Small cuties",
-            "response": {
-                "mention": "Here's cute kitty for ya boi %s",
-                "nonMention": "Look at that kitty i got for you"
-            }
-        },
-        "Hug": {
-            "description": "Hugs",
-            "response": {
-                "mention": "Big hug for %s",
-                "nonMention": "Here's a hug for you"
-            }
-        }, 
-        "Kiss": {
-            "description": "Kisses :*",
-            "response": {
-                "mention": "Kiss for %s :*",
-                "nonMention": "Kiss for you"
-            }
-        }, 
-        "Waifu": {
-            "description": "Some weird anime girls",
-            "response": {
-                "mention": "Here's waifu for %s",
-                "nonMention": "Here's your waifu"
-            }
-        }, 
-        "Hentai": {
-            "description": "Just some weird anime cartoons"
-        }, 
-        "Pet": {
-            "description": "Head patting",
-            "response": {
-                "mention": "Pat pat %s",
-                "nonMention": "Pat pat pat"
-            }
-        }, 
-        "Help": {
-            "description": "Get some help",
-            "embed": {
-                "main": {
-                    "title": "Help",
-                    "description": "Use `help [category]` or press adequate button to show help list for given category"
-                },
-
-                "categoryTitle": "Help for %s category",
-
-                "name": "Name",
-                "noName": "No name",
-
-                "description": "Description",
-                "noDescription": "No description specified",
-
-                "usage": "Usage",
-
-                "aliases": "Aliases",
-                "noAliases": "No aliases"
-            },
-
-            "page": "Page",
-
-            "commandNotFound": {
-                "title": "Command not found",
-                "message": "Command you requested does not exist"
-            }
-        }, 
-        "Ping": {
-            "description": "Just pong!"
-        }, 
-        "PingPong": {
-            "description": "Play some pingpong",
-            "tooManyMatches": "Max points per game is %d",
-            "win": {
-                "botTrophyMessage": "🏆 Look at my trophy, ha, easy!",
-                "userTrophyMessage": "You won trophy 🏆, there you go",
-                "message": "won ping pong game"
-            },
-            "scoreboardMessage": "Scoreboard"
-        },
-        "Stats": {
-            "description": "Gives you information about user",
-            "title": "Stats for user %s#%s",
-            "creationDate": "Account creation date",
-            "joinDate": "Server join date",
-            "userNotFound": "This user either doesn't exist or (s)he's not on this server"
-        }
+    "commandNotFound": {
+      "title": "Command not found",
+      "message": "Command you requested does not exist"
     }
+  },
+
+  "funFacts": [
+    "The raccoon can fit in your ass.",
+    "Your snot fly at a speed of ~44 km/h when you sneeze.",
+    "The United States has no official language.",
+    "A cockroach can live for several weeks without a head. It will eventually starve to death.",
+    "Galileo's middle finger is stored in the Science Museum in Florence.",
+    "The Spanish word „esposas” means both „handcuffs” and „wifes”.",
+    "There are about 4 „billiards of billiards” bacteria on Earth.",
+    "Oceans contain nearly 200,000 different types of viruses.",
+    "There are about 2,000 storms happening on Earth at any given moment.",
+    "Over a million planets of the Earth would fit into one sun.",
+    "Eel-flavored ice creams are available in Japan.",
+    "The world's largest pumpkin weighted more than a car.",
+    "There are more liquor stores in **Bydgoszcz** than in the rest of Norway."
+  ],
+
+  "categories": {
+    "Miscellaneous": {
+      "Description": "Other stuff"
+    },
+    "Bot config": {
+      "Description": "Bot config related commands"
+    },
+    "Fun": {
+      "Description": "Haha funni"
+    },
+    "Moderation": {
+      "Description": "Gang gang"
+    },
+    "Games": {
+      "Description": "Simple games vs bot"
+    }
+  },
+
+  "commands": {
+    "8Ball": {
+      "id": "",
+      "description": "I'll tell you truth",
+      "answers": [
+        "Yes!",
+        "Definitely!",
+        "Without any problems",
+        "For sure!",
+        "There's no way.",
+        "Nah, it wont work",
+        "I don't think so",
+        "Maybe?",
+        "Who knows",
+        "I dont know, ask someone else"
+      ],
+      "noArgumentsMessage": "You need to ask me something, dont ya?"
+    },
+    "Doggie": {
+      "description": "Cute doggies",
+      "response": {
+        "mention": "Here's cute doggy for %s",
+        "nonMention": "Cute doggie for u!"
+      }
+    },
+    "Kitty": {
+      "description": "Small cuties",
+      "response": {
+        "mention": "Here's cute kitty for ya boi %s",
+        "nonMention": "Look at that kitty i got for you"
+      }
+    },
+    "Hug": {
+      "description": "Hugs",
+      "response": {
+        "mention": "Big hug for %s",
+        "nonMention": "Here's a hug for you"
+      }
+    },
+    "Kiss": {
+      "description": "Kisses :*",
+      "response": {
+        "mention": "Kiss for %s :*",
+        "nonMention": "Kiss for you"
+      }
+    },
+    "Waifu": {
+      "description": "Some weird anime girls",
+      "response": {
+        "mention": "Here's waifu for %s",
+        "nonMention": "Here's your waifu"
+      }
+    },
+    "Pet": {
+      "description": "Head patting",
+      "response": {
+        "mention": "Pat pat %s",
+        "nonMention": "Pat pat pat"
+      }
+    },
+    "Help": {
+      "description": "Get some help",
+      "embed": {
+        "main": {
+          "title": "Help",
+          "description": "Use `help [category]` or press adequate button to show help list for given category"
+        },
+
+        "categoryTitle": "Help for %s category",
+
+        "name": "Name",
+        "noName": "No name",
+
+        "description": "Description",
+        "noDescription": "No description specified",
+
+        "usage": "Usage",
+
+        "aliases": "Aliases",
+        "noAliases": "No aliases"
+      },
+
+      "page": "Page"
+    },
+    "Ping": {
+      "description": "Just pong!"
+    },
+    "Stats": {
+      "description": "Gives you information about user",
+      "title": "Stats for user %s#%s",
+      "creationDate": "Account creation date",
+      "joinDate": "Server join date",
+      "userNotFound": "This user either doesn't exist or (s)he's not on this server"
+    }
+  }
 }

@@ -2,8 +2,8 @@ package gophelper
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 )
 
 type (
@@ -15,22 +15,9 @@ type (
 		JoinDate     string `json:"joinDate,omitempty"`
 	}
 
-	// PingPongCommand structure for game pingpong command
-	PingPongCommand struct {
-		TooManyMatchesMessage string `json:"tooManyMatches,omitempty"`
-
-		Win struct {
-			BotTrophyMessage  string `json:"botTrophyMessage"`
-			UserTrophyMessage string `json:"userTrophyMessage"`
-			Message           string `json:"message"`
-		} `json:"win,omitempty"`
-
-		ScoreboardMessage string `json:"scoreboardMessage,omitempty"`
-	}
-
 	// EightBallCommand structure for 8ball command
 	EightBallCommand struct {
-		NoArgumentsMessage string   `json:"noArgumensMessage,omitempty"`
+		NoArgumentsMessage string   `json:"noArgumentsMessage,omitempty"`
 		Answers            []string `json:"answers,omitempty"`
 	}
 
@@ -57,11 +44,6 @@ type (
 		} `json:"embed,omitempty"`
 
 		Page string `json:"page,omitempty"`
-
-		CommandNotFound struct {
-			Title   string `json:"title"`
-			Message string `json:"message"`
-		} `json:"commandNotFound,omitempty"`
 	}
 
 	// GiveCommand structure for kitty,doggy etc commands
@@ -78,7 +60,6 @@ type (
 		HelpCommand
 		GiveCommand
 		EightBallCommand
-		PingPongCommand
 		StatsCommand
 	}
 
@@ -94,6 +75,19 @@ type (
 			TooFewPermissions string `json:"tooFewPermissions"`
 			NSFWOnly          string `json:"nsfwOnly"`
 			RateLimit         string `json:"rateLimit"`
+
+			CommandNotFound struct {
+				Title   string `json:"title"`
+				Message string `json:"message"`
+			} `json:"commandNotFound,omitempty"`
+			CommandInvalidArguments struct {
+				Title   string `json:"title"`
+				Message string `json:"message"`
+			} `json:"invalidCommandArguments,omitempty"`
+			NoResultsFound struct {
+				Title   string `json:"title"`
+				Message string `json:"message"`
+			} `json:"noResultsFound,omitempty"`
 		} `json:"errors"`
 
 		FunFacts   []string                  `json:"funFacts"`
@@ -123,7 +117,7 @@ func LoadConfig(configPath string, languageConfigPath string) *Config {
 	file, err := ioutil.ReadFile(configPath)
 
 	if err != nil {
-		fmt.Println("Failed loading config ", err)
+		log.Printf("Loading config errored: %s\n", err.Error())
 		return nil
 	}
 
@@ -131,14 +125,14 @@ func LoadConfig(configPath string, languageConfigPath string) *Config {
 	err = json.Unmarshal(file, &config)
 
 	if err != nil {
-		fmt.Println("Failed unmarshaling config file", err)
+		log.Printf("Loading config errored while unmarshaling json: %s\n", err.Error())
 		return nil
 	}
 
 	err = config.LoadLanguage(languageConfigPath)
 
 	if err != nil {
-		fmt.Println("Failed loading language config ", err)
+		log.Printf("Loading config errored while loading language: %s\n", err.Error())
 		return nil
 	}
 

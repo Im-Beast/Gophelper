@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,47 +14,42 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var (
-	router = gophelper.Router{
-		Prefixes:      []string{"go"},
-		CaseSensitive: false,
-		Config:        gophelper.LoadConfig("configs/bot.json", "configs/languages/english.json"),
-	}
-)
+var router = gophelper.Router{
+	Prefixes:      []string{"go"},
+	CaseSensitive: false,
+	Config:        gophelper.LoadConfig("configs/bot.json", "configs/languages/english.json"),
+}
 
 func main() {
 	bot, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
-
 	if err != nil {
-		fmt.Println("Some error happened while launching bot:", err)
-		return
+		log.Fatalf("Failed launching bot: %s", err.Error())
 	}
 
 	bot.StateEnabled = true
 
 	err = bot.Open()
-
 	if err != nil {
-		fmt.Println("Failed opening connection", err)
-		return
+		log.Fatalf("Failed opening bot connection: %s", err.Error())
 	}
 
-	fmt.Printf("Bot %s is up and running\n", bot.State.User.Username)
+	log.Printf("Bot %s is up and running\n", bot.State.User.Username)
 
-	registerCategories()
 	registerMiddleware()
+	registerCategories()
 	registerCommands()
 
 	router.Init(bot)
 
-	defer func() {
-		sc := make(chan os.Signal, 1)
-		signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
-		<-sc
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
+	<-sc
 
-		fmt.Println("\rDisabling bot")
-		bot.Close()
-	}()
+	log.Println("Closing bot")
+	err = bot.Close()
+	if err != nil {
+		log.Printf("Failed closing bot: %s", err.Error())
+	}
 }
 
 func registerCategories() {
@@ -87,9 +82,7 @@ func registerCommands() {
 	router.AddCommand(commands.Kitty)
 	router.AddCommand(commands.Stats)
 	router.AddCommand(commands.Waifu)
-	router.AddCommand(commands.Hentai)
 	router.AddCommand(commands.Doggie)
-	router.AddCommand(commands.PingPong)
 	router.AddCommand(commands.Pinterest)
 	router.AddCommand(commands.EightBall)
 	router.AddCommand(commands.LanguageSwitcher)

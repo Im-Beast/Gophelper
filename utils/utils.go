@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -91,4 +93,22 @@ func GetStringVal(str string, notSet string) string {
 	default:
 		return str
 	}
+}
+
+func GetWebpageContent(url string) []byte {
+	response, err := http.Get(url)
+
+	if err != nil {
+		return []byte{}
+	}
+
+	defer response.Body.Close()
+
+	html, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		return []byte{}
+	}
+
+	return html
 }

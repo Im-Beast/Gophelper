@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -26,26 +26,24 @@ var EightBall = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		arguments := context.Arguments
+		args := context.Arguments
 		session := context.Session
-		message := context.Event
-
-		language := context.Command.LanguageSettings
-
-		answers := language.Answers
+		event := context.Event
+		lang := context.Command.LanguageSettings
+		answers := lang.Answers
 
 		var err error
 
-		if len(arguments) == 0 {
-			_, err = session.ChannelMessageSend(message.ChannelID, language.NoArgumentsMessage)
+		if len(args) == 0 {
+			_, err = session.ChannelMessageSend(event.ChannelID, lang.NoArgumentsMessage)
 		} else {
 			index := rand.Intn(len(answers))
 			randomAnswer := answers[index]
-			_, err = session.ChannelMessageSend(message.ChannelID, randomAnswer)
+			_, err = session.ChannelMessageSend(event.ChannelID, randomAnswer)
 		}
 
 		if err != nil {
-			fmt.Println("Error on 8ball command when sending message")
+			log.Printf("Command 8Ball errored while sending a message: %s", err.Error())
 		}
 	},
 }

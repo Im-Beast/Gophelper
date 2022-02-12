@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
@@ -55,7 +56,7 @@ func RateLimiterMiddleware(context *gophelper.CommandContext) (bool, func(*gophe
 		return false, func(context *gophelper.CommandContext) {
 			_, err := session.ChannelMessageSend(context.Event.ChannelID, fmt.Sprintf(routerLanguage.Errors.RateLimit, cooldownTime-now))
 			if err != nil {
-				fmt.Println("Failed sending rateLimit message")
+				log.Printf("Middleware RateLimiter errored while sending RateLimit error message: %s\n", err.Error())
 			}
 		}
 	} else if now-rateLimiter.LastRequestMap[authorID] >= int64(command.RateLimit.Duration.Seconds()) {

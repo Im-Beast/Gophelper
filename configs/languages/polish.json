@@ -1,156 +1,151 @@
 {
-    "errors": {
-        "messsageSend": "Nie udało się wysłać wiadomości",
-        "tooFewPermissions": "Nie masz wystarczających permisji by używać tej komendy",
-        "rateLimit": "Używasz tej komendy za czesto, sprobuj ponownie za %d sekundy"
+  "errors": {
+    "messsageSend": "Nie udało się wysłać wiadomości",
+    "tooFewPermissions": "Nie masz wystarczających permisji by używać tej komendy",
+    "rateLimit": "Używasz tej komendy za czesto, sprobuj ponownie za %d sekundy",
+
+    "noResultsFound": {
+      "title": "Nie znaleziono wyników",
+      "description": "Niestety nie znaleziono żadnych wyników :("
     },
-
-    "funFacts": [
-        "Szop pracz może zmieścić się w twojej dupie.",
-        "Twoje smarki jak kichasz lecą z prędkością ~44km/h.",
-        "Stany Zjednoczone nie posiadają języka urzędowego.",
-        "Karaluch może żyć kilka tygodni bez głowy. W końcu umrze z głodu.",
-        "Środkowy palec Galileusza jest przechowywany w Muzeum Nauki we Florencji.",
-        "Hiszpańskie słowo „esposas” oznacza zarówno „kajdanki”, jak i „żony”.",
-        "Na Ziemi jest około 4 „biliardy biliardów” bakterii.",
-        "Oceany zawierają prawie 200 tysięcy różnych rodzajów wirusów.",
-        "W każdej chwili na Ziemi ma miejsce około 2000 burz.",
-        "Ponad milion planet Ziemi zmieściłby się w jednym Słońcu.",
-        "Lody o smaku węgorza można kupić w Japonii.",
-        "Największa na świecie dynia ważyła więcej niż samochód.",
-        "W Bydgoszczy jest więcej sklepów monopolowych niż w całej Norwegii.",
-        "Niektóre plemiona tubylcze nie mają kontaktu z nowoczesną cywilizacją."
-    ],
-
-    "categories": {
-        "Miscellaneous": {
-            "Description": "Inne rzeczy"
-        },
-        "Bot config": {
-            "Description": "Komendy związane z konfiguracją bota"
-        },
-        "Fun": {
-            "Description": "Heh, śmieszne"
-        },
-        "Moderation": {
-            "Description": "Geng geng"
-        },
-        "Games": {
-            "Description": "Proste gry przeciwko botowi"
-        }
+    "invalidCommandArguments": {
+      "title": "Nieprawidłowe argumenty dla komendy",
+      "message": "Podałeś nieprawidłowe argumenty dla komendy %s"
     },
-
-    "commands": {
-        "8Ball": {
-            "description": "Powiem ci prawdę",
-            "answers": [
-                "Jeszcze jak!",
-                "Tak",
-                "Bez kitu",
-                "Na serio!",
-                "Nie ma szans",
-                "A czy papież sra w lesie?",
-                "Mówie ci, to nie wyjdzie",
-                "Nieno raczej nie",
-                "Może",
-                "Kij wie"
-            ],
-            "noArgumentsMessage": "Musisz sie mnie o cos zapytac"
-        },
-        "Doggie": {
-            "description": "Słodkie pieski",
-            "response": {
-                "mention": "Masz pieska dla %s",
-                "nonMention": "Masz pieska"
-            }
-        },
-        "Kitty": {
-            "description": "Słodkie kotki",
-            "response": {
-                "mention": "Masz kotka dla %s",
-                "nonMention": "Masz kotka"
-            }
-        },
-        "Hug": {
-            "description": "Przytulasy",
-            "response": {
-                "mention": "Masz przytulasa dla %s",
-                "nonMention": "Masz przytulasa"
-            }
-        },
-        "Kiss": {
-            "description": "Całusy",
-            "response": {
-                "mention": "Masz całusa dla %s",
-                "nonMention": "Masz całusa"
-            }
-        }, 
-        "Waifu": {
-            "description": "Jakieś dziwne anime dziewczynki",
-            "response": {
-                "mention": "Masz waifu dla %s",
-                "nonMention": "Masz waifu"
-            }
-        }, 
-        "Hentai": {
-            "description": "Po prostu anime bajki"
-        }, 
-        "Pet": {
-            "description": "Ciapanie po główce",
-            "response": {
-                "mention": "Masz glaskanko dla %s",
-                "nonMention": "Pat pat pat"
-            }
-        }, 
-        "Help": {
-            "description": "Daj sobie pomóc",
-            
-            "embed": {
-                "main": {
-                    "title": "Pomoc",
-                    "description": "Użyj `help [kategoria]` lub naciśnij odpowiednie guziki, żeby pokazać pomoc dla danej kategorii"
-                },
-
-                "categoryTitle": "Pomoc dla kategorii %s",
-
-                "name": "Nazwa",
-                "noName": "Brak nazwy",
-
-                "description": "Opis",
-                "noDescription": "Brak opisu",
-
-                "usage": "Sposób użycia",
-
-                "aliases": "Aliasy",
-                "noAliases": "Brak aliasów"
-            },
-
-            "page": "Strona",
-
-            "commandNotFound": {
-                "title": "Komenda nie została znaleziona",
-                "message": "Komenda którą próbowałeś znaleźć nie isntieje"
-            }
-        }, 
-        "Ping": {
-            "description": "Po prostu pong!"
-        }, 
-        "PingPong": {
-            "description": "Zagraj se w pingponga",
-            "tooManyMatches": "Maksymalna liczba punktow na gre to %d",
-            "win": {
-                "botTrophyMessage": "🏆 Patrz jaki puchar ładny, eee nie dla polaka",
-                "userTrophyMessage": "Wygrałeś puchar 🏆, gratuluje",
-                "message": "wygrał w ping ponga"
-            },
-            "scoreboardMessage": "Lista punktów"
-        }, 
-        "Stats": {
-            "description": "Daje ci informacje o użytkowniku",
-            "title": "Statystyki dla użytkownika %s#%s",
-            "creationDate": "Data założenia konta",
-            "joinDate": "Data dołączenia na serwer",
-            "userNotFound": "Ten użytkownik nie istnieje bądź nie jest na tym serwerze"
-        }
+    "commandNotFound": {
+      "title": "Komenda nie została znaleziona",
+      "message": "Komenda którą próbowałeś znaleźć nie istnieje"
     }
+  },
+
+  "funFacts": [
+    "Szop pracz może zmieścić się w twojej dupie.",
+    "Twoje smarki jak kichasz lecą z prędkością ~44km/h.",
+    "Stany Zjednoczone nie posiadają języka urzędowego.",
+    "Karaluch może żyć kilka tygodni bez głowy. W końcu umrze z głodu.",
+    "Środkowy palec Galileusza jest przechowywany w Muzeum Nauki we Florencji.",
+    "Hiszpańskie słowo „esposas” oznacza zarówno „kajdanki”, jak i „żony”.",
+    "Na Ziemi jest około 4 „biliardy biliardów” bakterii.",
+    "Oceany zawierają prawie 200 tysięcy różnych rodzajów wirusów.",
+    "W każdej chwili na Ziemi ma miejsce około 2000 burz.",
+    "Ponad milion planet Ziemi zmieściłby się w jednym Słońcu.",
+    "Lody o smaku węgorza można kupić w Japonii.",
+    "Największa na świecie dynia ważyła więcej niż samochód.",
+    "W Bydgoszczy jest więcej sklepów monopolowych niż w całej Norwegii.",
+    "Niektóre plemiona tubylcze nie mają kontaktu z nowoczesną cywilizacją."
+  ],
+
+  "categories": {
+    "Miscellaneous": {
+      "Description": "Inne rzeczy"
+    },
+    "Bot config": {
+      "Description": "Komendy związane z konfiguracją bota"
+    },
+    "Fun": {
+      "Description": "Heh, śmieszne"
+    },
+    "Moderation": {
+      "Description": "Geng geng"
+    },
+    "Games": {
+      "Description": "Proste gry przeciwko botowi"
+    }
+  },
+
+  "commands": {
+    "8Ball": {
+      "description": "Powiem ci prawdę",
+      "answers": [
+        "Jeszcze jak!",
+        "Tak",
+        "Bez kitu",
+        "Na serio!",
+        "Nie ma szans",
+        "A czy papież sra w lesie?",
+        "Mówie ci, to nie wyjdzie",
+        "Nieno raczej nie",
+        "Może",
+        "Kij wie"
+      ],
+      "noArgumentsMessage": "Musisz sie mnie o cos zapytac"
+    },
+    "Doggie": {
+      "description": "Słodkie pieski",
+      "response": {
+        "mention": "Masz pieska dla %s",
+        "nonMention": "Masz pieska"
+      }
+    },
+    "Kitty": {
+      "description": "Słodkie kotki",
+      "response": {
+        "mention": "Masz kotka dla %s",
+        "nonMention": "Masz kotka"
+      }
+    },
+    "Hug": {
+      "description": "Przytulasy",
+      "response": {
+        "mention": "Masz przytulasa dla %s",
+        "nonMention": "Masz przytulasa"
+      }
+    },
+    "Kiss": {
+      "description": "Całusy",
+      "response": {
+        "mention": "Masz całusa dla %s",
+        "nonMention": "Masz całusa"
+      }
+    },
+    "Waifu": {
+      "description": "Jakieś dziwne anime dziewczynki",
+      "response": {
+        "mention": "Masz waifu dla %s",
+        "nonMention": "Masz waifu"
+      }
+    },
+    "Pet": {
+      "description": "Ciapanie po główce",
+      "response": {
+        "mention": "Masz glaskanko dla %s",
+        "nonMention": "Pat pat pat"
+      }
+    },
+    "Help": {
+      "description": "Daj sobie pomóc",
+
+      "embed": {
+        "main": {
+          "title": "Pomoc",
+          "description": "Użyj `help [kategoria]` lub naciśnij odpowiednie guziki, żeby pokazać pomoc dla danej kategorii"
+        },
+
+        "categoryTitle": "Pomoc dla kategorii %s",
+
+        "name": "Nazwa",
+        "noName": "Brak nazwy",
+
+        "description": "Opis",
+        "noDescription": "Brak opisu",
+
+        "usage": "Sposób użycia",
+
+        "aliases": "Aliasy",
+        "noAliases": "Brak aliasów"
+      },
+
+      "page": "Strona"
+    },
+    "Ping": {
+      "description": "Po prostu pong!"
+    },
+    "Stats": {
+      "description": "Daje ci informacje o użytkowniku",
+      "title": "Statystyki dla użytkownika %s#%s",
+      "creationDate": "Data założenia konta",
+      "joinDate": "Data dołączenia na serwer",
+      "userNotFound": "Ten użytkownik nie istnieje bądź nie jest na tym serwerze"
+    }
+  }
 }

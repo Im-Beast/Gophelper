@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
@@ -11,8 +12,10 @@ import (
 
 // LanguageSwitcher command, this command i keep in english and english only for understandable reasons
 var LanguageSwitcher = &gophelper.Command{
+	ID: "Language",
+
 	Name:    "👅 Language",
-	Aliases: []string{"lang"},
+	Aliases: []string{"lang", "language"},
 
 	Category: gophelper.CATEGORY_CONFIG,
 
@@ -26,33 +29,35 @@ var LanguageSwitcher = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		arguments := context.Arguments
+		args := context.Arguments
+		event := context.Event
 		session := context.Session
-		message := context.Event
 
-		if len(arguments) == 0 {
-			_, err := session.ChannelMessageSend(message.ChannelID, "You need to specify language config file")
+		if len(args) == 0 {
+			_, err := session.ChannelMessageSend(event.ChannelID, "You need to specify language config file")
 			if err != nil {
-				fmt.Println("Error on language command when sending message")
+				log.Printf("Command Language errored while sending error message: %s", err.Error())
 			}
 			return
 		}
 
 		config := context.Router.Config
 
-		err := config.LoadLanguage("configs/languages/" + arguments[0])
+		lang := args[0]
+		err := config.LoadLanguage("configs/languages/" + lang)
+
 		context.Router.RefreshCommands()
 		context.Router.RefreshCategories()
 
 		if err != nil {
-			_, err = session.ChannelMessageSend(message.ChannelID, "Something happened while loading this config file, are you sure it exists?")
-			fmt.Println("Failed on language command when loading language file")
+			log.Printf("Failed loading %s language from configs/languages/%s", lang, lang)
+			_, err = session.ChannelMessageSend(event.ChannelID, "Something happened while loading this config file, are you sure it exists?")
 		} else {
-			_, err = session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("Successfully changed language config file to %s", arguments[0]))
+			_, err = session.ChannelMessageSend(event.ChannelID, fmt.Sprintf("Successfully changed language config file to %s", lang))
 		}
 
 		if err != nil {
-			fmt.Println("Error on language command when sending message")
+			log.Printf("Command Language errored while sending error message: %s", err.Error())
 		}
 	},
 }

@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
@@ -28,25 +29,31 @@ var Ping = &gophelper.Command{
 		session := context.Session
 		message := context.Event
 
-		var timeDiff, timeDiff2 int64
-		var msgTime, msgTime2 time.Time
-
-		msgTime, _ = message.Timestamp.Parse()
-		timeDiff = time.Since(msgTime).Milliseconds()
-
-		msg, err := session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("🏓 Pong\n Discord: `%d ms`", timeDiff))
-
+		msgTime, err := message.Timestamp.Parse()
 		if err != nil {
-			fmt.Println("Error on ping command when sending message")
+			log.Printf("Command Ping errored while parsing message timestamp: %s\n", err.Error())
+			return
 		}
 
-		msgTime2, _ = msg.Timestamp.Parse()
-		timeDiff2 = msgTime2.Sub(msgTime).Milliseconds()
+		timeDiff := time.Since(msgTime).Milliseconds()
+
+		msg, err := session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("🏓 Pong\n Discord: `%d ms`", timeDiff))
+		if err != nil {
+			log.Printf("Command Ping errored while sending message: %s\n", err.Error())
+			return
+		}
+
+		msgTime2, err := msg.Timestamp.Parse()
+		if err != nil {
+			log.Printf("Command Ping errored while parsing message timestamp: %s\n", err.Error())
+			return
+		}
+
+		timeDiff2 := msgTime2.Sub(msgTime).Milliseconds()
 
 		_, err = session.ChannelMessageEdit(msg.ChannelID, msg.ID, fmt.Sprintf("🏓 Pong\n Discord: `%d ms`\n Took: `%d ms`", timeDiff, timeDiff2))
-
 		if err != nil {
-			fmt.Println("Error on ping command when editing message")
+			log.Printf("Command Ping errored while editing message: %s\n", err.Error())
 		}
 	},
 }

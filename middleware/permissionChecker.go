@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"log"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
 	utils "github.com/Im-Beast/Gophelper/utils"
@@ -20,7 +20,7 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 			return false, func(*gophelper.CommandContext) {
 				_, err := session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.NSFWOnly)
 				if err != nil {
-					fmt.Println("Error while sending too few permissions message")
+					log.Printf("Middleware PermissionChecker errored while sending NSFWOnly error message: %s\n", err.Error())
 				}
 			}
 		}
@@ -32,7 +32,7 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 
 	permissions, err := session.UserChannelPermissions(message.Author.ID, message.ChannelID)
 	if err != nil {
-		fmt.Println("Failed getting perms")
+		log.Printf("Middleware PermissionChecker errored while getting permissions: %s\n", err.Error())
 		permissions = 0
 	}
 
@@ -40,7 +40,7 @@ func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*g
 		return false, func(*gophelper.CommandContext) {
 			_, err := session.ChannelMessageSend(message.ChannelID, routerLanguage.Errors.TooFewPermissions)
 			if err != nil {
-				fmt.Println("Error while sending too few permissions message")
+				log.Printf("Middleware PermissionChecker errored while sending TooFewPermissions error message: %s\n", err.Error())
 			}
 		}
 	}

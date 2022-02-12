@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	gophelper "github.com/Im-Beast/Gophelper/internal"
@@ -51,7 +52,7 @@ var Stats = &gophelper.Command{
 		if err != nil {
 			_, err := session.ChannelMessageSend(message.ChannelID, language.UserNotFound)
 			if err != nil {
-				fmt.Println("Error on stats command when sending message")
+				log.Printf("Command Stats errored while sending error message: %s\n", err.Error())
 			}
 			return
 		}
@@ -85,7 +86,7 @@ var Stats = &gophelper.Command{
 		_, err = session.ChannelMessageSendEmbed(message.ChannelID, embed)
 
 		if err != nil {
-			fmt.Println("Error on stats command when sending message")
+			log.Printf("Command Stats errored while sending embed message: %s\n", err.Error())
 		}
 	},
 }
