@@ -21,7 +21,7 @@ var hugs = []string{
 	"https://media.tenor.co/videos/161dd2416944be9249bcd0a6d69e0463/mp4",
 }
 
-// Hug hug
+// Command which replies to you with hugs 🤗 and love!
 var Hug = &gophelper.Command{
 	ID: "Hug",
 
@@ -38,6 +38,6 @@ var Hug = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Hug", hugs)
+		generics.ImageResponseHandler(context, "Hug", "🤗", hugs)
 	},
 }

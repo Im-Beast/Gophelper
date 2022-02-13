@@ -2,7 +2,7 @@ package gophelper
 
 import "github.com/bwmarrin/discordgo"
 
-// CommandContext contains necessary information about command and from where it comes from
+// Contains necessary information about command
 type CommandContext struct {
 	Session *discordgo.Session
 	Router  *Router

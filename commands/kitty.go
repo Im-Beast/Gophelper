@@ -10,7 +10,7 @@ import (
 
 var kitties = []string{"http://www.randomkittengenerator.com/cats/rotator.php"}
 
-// Kitty kitties
+// Command which replies to you with cute kitty images 🐈
 var Kitty = &gophelper.Command{
 	ID: "Kitty",
 
@@ -27,6 +27,6 @@ var Kitty = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Kitty", kitties)
+		generics.ImageResponseHandler(context, "Kitty", "🐈", kitties)
 	},
 }

@@ -10,7 +10,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// LanguageSwitcher command, this command i keep in english and english only for understandable reasons
+// Command which allows you to change gophelper language on the fly 👅
+// ! This command is kept in english only, so it can be easily understood if language got randomly changed
 var LanguageSwitcher = &gophelper.Command{
 	ID: "Language",
 

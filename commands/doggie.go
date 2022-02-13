@@ -10,7 +10,7 @@ import (
 
 var doggies = []string{"https://www.randomdoggiegenerator.com/randomdoggie.php"}
 
-// Doggie doggies
+// Command which replies to you with cute doggie images 🐕
 var Doggie = &gophelper.Command{
 	ID: "Doggie",
 
@@ -27,6 +27,6 @@ var Doggie = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Doggie", doggies)
+		generics.ImageResponseHandler(context, "Doggie", "🐕", doggies)
 	},
 }

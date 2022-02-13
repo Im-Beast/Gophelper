@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 var cachedMainHelp *discordgo.MessageEmbed
 var cachedCategoryPages map[*gophelper.Category][]*discordgo.MessageEmbed
 
+// Command which gives you information about available commands
 var Help = &gophelper.Command{
 	ID: "Help",
 
@@ -76,8 +78,11 @@ var Help = &gophelper.Command{
 				return
 			}
 
-			if length > 1 && utils.IsNumber(args[1]) {
-				page = utils.StringToInt(args[1])
+			if length > 1 {
+				page, err = strconv.Atoi(args[1])
+				if err != nil {
+					page = 0
+				}
 			}
 
 			pages := getCategoryPages(router, &langCfg)

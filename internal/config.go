@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	// StatsCommand structure for stats command
+	// Structure for "stats" command
 	StatsCommand struct {
 		UserNotFound string `json:"userNotFound,omitempty"`
 		Title        string `json:"title,omitempty"`
@@ -15,13 +15,13 @@ type (
 		JoinDate     string `json:"joinDate,omitempty"`
 	}
 
-	// EightBallCommand structure for 8ball command
+	// Structure for "8ball" command
 	EightBallCommand struct {
 		NoArgumentsMessage string   `json:"noArgumentsMessage,omitempty"`
 		Answers            []string `json:"answers,omitempty"`
 	}
 
-	// HelpCommand structure for help command
+	// Structure for "help" command
 	HelpCommand struct {
 		Embed struct {
 			Main struct {
@@ -46,29 +46,29 @@ type (
 		Page string `json:"page,omitempty"`
 	}
 
-	// GiveCommand structure for kitty,doggy etc commands
-	GiveCommand struct {
+	// Structure for give commands ("kitty", "doggy", "waifu", etc)
+	ImageResponseCommand struct {
 		Response struct {
 			Mention    string `json:"mention"`
 			NonMention string `json:"nonMention"`
 		} `json:"response,omitempty"`
 	}
 
-	// CommandConfig contains structure that commands used for their translation
+	// Structure used for commands translation
 	CommandConfig struct {
 		Description string `json:"description,omitempty"`
 		HelpCommand
-		GiveCommand
+		ImageResponseCommand
 		EightBallCommand
 		StatsCommand
 	}
 
-	// CategoryConfig contains structure that categories used for their translation
+	// Strcuture that used for categories translation
 	CategoryConfig struct {
 		Description string `json:"description"`
 	}
 
-	// LanguageConfig contains config information that is mainly about translation
+	// Translation config
 	LanguageConfig struct {
 		Errors struct {
 			MessageSend       string `json:"messageSend"`
@@ -95,7 +95,7 @@ type (
 		Categories map[string]CategoryConfig `json:"categories"`
 	}
 
-	// Config main router config structure
+	// Main router config structure
 	Config struct {
 		Prefix struct {
 			Value         []string `json:"prefixes"`
@@ -112,7 +112,7 @@ type (
 	}
 )
 
-// LoadConfig loads config from file
+// Loads config from file
 func LoadConfig(configPath string, languageConfigPath string) *Config {
 	file, err := ioutil.ReadFile(configPath)
 
@@ -139,7 +139,7 @@ func LoadConfig(configPath string, languageConfigPath string) *Config {
 	return &config
 }
 
-// LoadLanguage loads language from file to Config object
+// Loads language from file to Config object
 func (config *Config) LoadLanguage(languageConfigPath string) error {
 	file, err := ioutil.ReadFile(languageConfigPath)
 

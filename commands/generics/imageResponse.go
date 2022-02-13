@@ -11,12 +11,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func ImageResponseHandler(context *gophelper.CommandContext, cmdName string, responses []string) {
+func ImageResponseHandler(context *gophelper.CommandContext, cmdName string, reactionEmoji string, responses []string) {
 	args := context.Arguments
 	event := context.Event
 	session := context.Session
 	lang := context.Router.Config.Language
-	language := context.Command.LanguageSettings
+	language := lang.Commands[context.Command.ID]
 
 	title := language.Response.NonMention
 
@@ -66,7 +66,7 @@ func ImageResponseHandler(context *gophelper.CommandContext, cmdName string, res
 		_, err = session.ChannelMessageSend(event.ChannelID, lang.Errors.MessageSend)
 		log.Printf("Command %s errored while sending error message: %s", cmdName, err.Error())
 	} else {
-		err = session.MessageReactionAdd(msg.ChannelID, msg.ID, "🐕")
+		err = session.MessageReactionAdd(msg.ChannelID, msg.ID, reactionEmoji)
 		if err != nil {
 			log.Printf("Command %s errored while reacting to a message: %s", cmdName, err.Error())
 		}

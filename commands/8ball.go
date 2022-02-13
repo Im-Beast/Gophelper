@@ -9,7 +9,7 @@ import (
 	middleware "github.com/Im-Beast/Gophelper/middleware"
 )
 
-// EightBall doggies
+// Command which answers your questions 🔮
 var EightBall = &gophelper.Command{
 	ID: "8Ball",
 
@@ -29,13 +29,13 @@ var EightBall = &gophelper.Command{
 		args := context.Arguments
 		session := context.Session
 		event := context.Event
-		lang := context.Command.LanguageSettings
-		answers := lang.Answers
+		cmdLang := context.Router.Config.Language.Commands[context.Command.ID]
+		answers := cmdLang.Answers
 
 		var err error
 
 		if len(args) == 0 {
-			_, err = session.ChannelMessageSend(event.ChannelID, lang.NoArgumentsMessage)
+			_, err = session.ChannelMessageSend(event.ChannelID, cmdLang.NoArgumentsMessage)
 		} else {
 			index := rand.Intn(len(answers))
 			randomAnswer := answers[index]

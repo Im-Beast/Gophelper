@@ -14,7 +14,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// Pinterest cool pics
+// Command which replies with searched pinterest results 🖼️
 var Pinterest = &gophelper.Command{
 	ID: "Pinterest",
 

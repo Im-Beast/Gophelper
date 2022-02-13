@@ -9,7 +9,7 @@ import (
 	middleware "github.com/Im-Beast/Gophelper/middleware"
 )
 
-// Ping pong
+// Command which replies with pong and latency metrics
 var Ping = &gophelper.Command{
 	ID: "Ping",
 

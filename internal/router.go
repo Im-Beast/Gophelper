@@ -13,23 +13,21 @@ type Router struct {
 	Prefixes      []string
 	CaseSensitive bool
 
-	Middleware []Middleware
-
 	Config *Config
 
-	Commands []*Command
+	Middleware    map[string][]Middleware
+	CmdMiddleware []Middleware
 
+	Commands   []*Command
 	Categories []*Category
 }
 
-var routerMiddleware = make(map[string][]Middleware)
-
-// AddCommand Adds command to router
+// Adds command to router
 func (router *Router) AddCommand(command *Command) {
 	router.RefreshCommand(command)
 
-	if len(routerMiddleware["AddCommand"]) > 0 {
-		for _, middleware := range routerMiddleware["AddCommand"] {
+	if len(router.Middleware["AddCommand"]) > 0 {
+		for _, middleware := range router.Middleware["AddCommand"] {
 			middleware(&CommandContext{Command: command, Router: router})
 		}
 	}
@@ -37,99 +35,99 @@ func (router *Router) AddCommand(command *Command) {
 	router.Commands = append(router.Commands, command)
 }
 
-// RemoveCommand returns function that removes command from maps
+// Returns function that removes command from maps (Commands and Middleware)
 func (router *Router) RemoveCommand(command *Command) {
-	if len(routerMiddleware["RemoveCommand"]) > 0 {
-		for _, middleware := range routerMiddleware["RemoveCommand"] {
+	if len(router.Middleware["RemoveCommand"]) > 0 {
+		for _, middleware := range router.Middleware["RemoveCommand"] {
 			middleware(&CommandContext{Command: command, Router: router})
 		}
 	}
 
 	for i, cmd := range router.Commands {
-		if cmd == command {
-			router.Commands = append(router.Commands[:i], router.Commands[i+1:]...)
-			return
+		if cmd != command {
+			continue
 		}
+
+		router.Commands = append(router.Commands[:i], router.Commands[i+1:]...)
+		break
 	}
 }
 
-// RefreshCategories refreshes all categories
+// Refreshes all categories
 func (router *Router) RefreshCategories() {
 	for _, category := range router.Categories {
 		category.Description = router.Config.Language.Categories[category.Name].Description
 	}
 }
 
-// RefreshCommand refreshes given command
+// Refreshes given command
 func (router *Router) RefreshCommand(command *Command) {
-	if len(routerMiddleware["RefreshCommand"]) > 0 {
-		for _, middleware := range routerMiddleware["RefreshCommand"] {
+	if len(router.Middleware["RefreshCommand"]) > 0 {
+		for _, middleware := range router.Middleware["RefreshCommand"] {
 			middleware(&CommandContext{Command: command, Router: router})
 		}
 	}
 
-	commandLanguageSettings := router.Config.Language.Commands[command.ID]
-
-	command.LanguageSettings = commandLanguageSettings
-	command.Description = commandLanguageSettings.Description
+	cmdLanguage := router.Config.Language.Commands[command.ID]
+	command.Description = utils.GetStringVal(cmdLanguage.Description, command.Description)
 }
 
-// RefreshCommands does RefreshCommand to all commands in router
+// Calls RefreshCommand on all commands in router
 func (router *Router) RefreshCommands() {
 	for _, command := range router.Commands {
 		router.RefreshCommand(command)
 	}
 }
 
-// AddMiddleware Adds middleware when executing command to router
+// Adds middleware which fires when command executes in a router
 func (router *Router) AddMiddleware(middleware Middleware) {
-	router.Middleware = append(router.Middleware, middleware)
+	router.CmdMiddleware = append(router.CmdMiddleware, middleware)
 }
 
-// AddRouterMiddleware Adds middleware to router on specified event
+// Adds middleware to router which fires on specified event
 func (router *Router) AddRouterMiddleware(event string, middleware Middleware) {
-	routerMiddleware[event] = append(routerMiddleware[event], middleware)
+	router.Middleware[event] = append(router.Middleware[event], middleware)
 }
 
-// Init Initializes router
+// Initializes router
 func (router *Router) Init(session *discordgo.Session) {
 	session.AddHandler(router.handler)
 }
 
-// handler routes commands
+// Routes commands
 func (router *Router) handler(session *discordgo.Session, event *discordgo.MessageCreate) {
-	message := event.Message
+	msg := event.Message
 
-	if message.Author.Bot {
+	if msg.Author.Bot {
 		return
 	}
 
-	Prefix := ""
+	foundPrefix := ""
 
 	for _, prefix := range router.Prefixes {
-		if utils.MatchesPrefix(message.Content, prefix, router.CaseSensitive) {
-			Prefix = prefix
+		if utils.MatchesPrefix(msg.Content, prefix, router.CaseSensitive) {
+			foundPrefix = prefix
 			break
 		}
 	}
 
-	if Prefix == "" {
+	if foundPrefix == "" {
 		return
 	}
 
-	arguments := strings.Fields(message.Content)
-	arguments = arguments[len(strings.Fields(Prefix)):]
+	args := strings.Fields(msg.Content)
+	args = args[len(strings.Fields(foundPrefix)):]
 
-	argumentsString := strings.Join(arguments, " ")
+	strArgs := strings.Join(args, " ")
 
 	var command *Command
 
 	for _, cmd := range router.Commands {
 		for _, alias := range cmd.Aliases {
-			argumentString := argumentsString[:utils.ClampInt(len(alias)+1, 0, len(argumentsString))]
+			argumentString := strArgs[:utils.ClampInt(len(alias)+1, 0, len(strArgs))]
 
-			if utils.Matches(argumentString, alias, cmd.CaseSensitive) || utils.Matches(argumentString, alias+" ", cmd.CaseSensitive) {
-				arguments = arguments[len(strings.Fields(alias)):]
+			if utils.StringMatches(argumentString, alias, cmd.CaseSensitive) || utils.StringMatches(argumentString, alias+" ", cmd.CaseSensitive) {
+				args = args[len(strings.Fields(alias)):]
 				command = cmd
 				break
 			}
@@ -140,7 +138,7 @@ func (router *Router) handler(session *discordgo.Session, event *discordgo.Messa
 				Session: session,
 
 				Command:   cmd,
-				Arguments: arguments,
+				Arguments: args,
 
 				Router: router,
 				Event:  event,

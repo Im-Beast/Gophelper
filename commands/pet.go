@@ -19,7 +19,7 @@ var pets = []string{
 	"https://images-ext-2.discordapp.net/external/YGfES-ulmqGYpRHtQ2CPkNNb8v-czYIl6BCysdhfXyQ/%3Fitemid%3D5359308/https/media1.tenor.com/images/a4a2b1eaa47fd0d8d0951433bc59ab9a/tenor.gif",
 }
 
-// Pet pet
+// Command which replies to you with images of petting ✋
 var Pet = &gophelper.Command{
 	ID: "Pet",
 
@@ -36,6 +36,6 @@ var Pet = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Pet", pets)
+		generics.ImageResponseHandler(context, "Pet", "✋", pets)
 	},
 }

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Command basic structure of a command
+// Basic structure of a command
 type Command struct {
 	ID string
 
@@ -28,14 +28,12 @@ type Command struct {
 		Duration time.Duration
 	}
 
-	LanguageSettings CommandConfig
-
 	Handler func(*CommandContext)
 }
 
-// Function that is used to start command
+// Runs command with given context
 func (cmd *Command) run(context *CommandContext) {
-	for _, middleware := range context.Router.Middleware {
+	for _, middleware := range context.Router.CmdMiddleware {
 		ok, handler := middleware(context)
 
 		if !ok && handler != nil {

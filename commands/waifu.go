@@ -38,7 +38,7 @@ var waifus = []string{
 	"https://c4.wallpaperflare.com/wallpaper/772/24/887/rokudenashi-majutsu-koushi-to-akashic-records-rumia-anime-girls-miniskirt-wallpaper-preview.jpg",
 }
 
-// Waifu waifu
+// Command which replies to you with waifus
 var Waifu = &gophelper.Command{
 	ID: "Waifu",
 
@@ -55,6 +55,6 @@ var Waifu = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Waifu", waifus)
+		generics.ImageResponseHandler(context, "Waifu", "🌸", waifus)
 	},
 }

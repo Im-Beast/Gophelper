@@ -7,7 +7,7 @@ import (
 	utils "github.com/Im-Beast/Gophelper/utils"
 )
 
-// PermissionCheckMiddleware is middleware that confirms whether user that executed command actually has enough permissions to use it
+// Confirms whether user that wanted to execute command has enough permissions to use it
 func PermissionCheckMiddleware(context *gophelper.CommandContext) (bool, func(*gophelper.CommandContext)) {
 	session := context.Session
 	message := context.Event

@@ -17,7 +17,7 @@ var kisses = []string{
 	"https://data.whicdn.com/images/166496706/original.gif",
 }
 
-// Kiss :*
+// Command which replies to you with kisses 😘
 var Kiss = &gophelper.Command{
 	ID: "Kiss",
 
@@ -34,6 +34,6 @@ var Kiss = &gophelper.Command{
 	},
 
 	Handler: func(context *gophelper.CommandContext) {
-		generics.ImageResponseHandler(context, "Kiss", kisses)
+		generics.ImageResponseHandler(context, "Kiss", "😘", kisses)
 	},
 }

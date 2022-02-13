@@ -8,13 +8,13 @@ import (
 	gophelper "github.com/Im-Beast/Gophelper/internal"
 )
 
-// RateLimit Structure for command to configure their own rate limit timings
+// RateLimit structure for commands to configure their own rate limit timings
 type RateLimit struct {
 	Limit    int
 	Duration time.Duration
 }
 
-// RateLimiter Main RateLimiter structure containing information about currently cooldowned players etc
+// RateLimiter structure containing neccessary information about cooldowned users
 type RateLimiter struct {
 	Initialized    bool
 	CmdCountMap    map[string]int
@@ -24,7 +24,7 @@ type RateLimiter struct {
 
 var rateLimiters = make(map[string]map[*gophelper.Command]RateLimiter)
 
-// RateLimiterMiddleware Middleware that checks user rate limit
+// Maintains user rate limits
 func RateLimiterMiddleware(context *gophelper.CommandContext) (bool, func(*gophelper.CommandContext)) {
 	command := context.Command
 	authorID := context.Event.Author.ID

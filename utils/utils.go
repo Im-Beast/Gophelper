@@ -1,45 +1,36 @@
 package utils
 
 import (
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-// IsMention returns whether given string is mention <@...>/<@!...>
+// Returns whether a given string is a mention <@...>/<@!...>
 func IsMention(str string) bool {
 	matches, _ := regexp.MatchString("<@!?.*>", str)
 	return matches
 }
 
-// IsNumber returns whether given string is number
+// Returns whether a given string is number
 func IsNumber(str string) bool {
 	matches, _ := regexp.MatchString("^\\d+$", str)
 	return matches
 }
 
-// StringToInt converts string to int, if its invalid returns -1
-func StringToInt(str string) int {
-	num, err := strconv.Atoi(str)
-	if err != nil {
-		return -1
-	}
-	return num
-}
-
-// MentionToID converts mention <@...> thing to user ID
+// Converts a mention <@...> to the user ID
 func MentionToID(mention string) string {
 	return strings.Replace(strings.Replace(strings.Replace(mention, "<@", "", 1), ">", "", 1), "!", "", 1)
 }
 
-// Matches returns whether string matches second string
-func Matches(str string, str2 string, caseSensitive bool) bool {
-	if !caseSensitive && strings.ToLower(str) == strings.ToLower(str2) {
+// Returns whether str1 matches str2
+func StringMatches(str string, str2 string, caseSensitive bool) bool {
+	if !caseSensitive && strings.EqualFold(str, str2) {
 		return true
 	} else if str == str2 {
 		return true
@@ -48,35 +39,37 @@ func Matches(str string, str2 string, caseSensitive bool) bool {
 	return false
 }
 
-// MatchesPrefix returns whether string has prefix
+// Returns whether a string has given prefix
 func MatchesPrefix(str string, prefix string, caseSensitive bool) bool {
-	if !caseSensitive && strings.HasPrefix(strings.ToLower(str), strings.ToLower(prefix)) {
-		return true
-	} else if strings.HasPrefix(str, prefix) {
+	switch {
+	case strings.HasPrefix(str, prefix):
+		fallthrough
+	case !caseSensitive && strings.HasPrefix(strings.ToLower(str), strings.ToLower(prefix)):
 		return true
 	}
+
+	fmt.Printf("str %s prefix %s cs %v | %v", str, prefix, caseSensitive, strings.HasPrefix(str, prefix))
 
 	return false
 }
 
-// RandomStringElement Returns random element from string array
+// Returns random element from given string array
 func RandomStringElement(array []string) string {
 	return array[rand.Intn(len(array))]
 }
 
-// ClampInt clamps int
+// Clamp int between min and max values
 func ClampInt(num int, min int, max int) int {
 	switch {
 	case num < min:
 		return min
 	case num > max:
 		return max
-	default:
-		return num
 	}
+	return num
 }
 
-// IsNSFW returns whether channel with given channelID has enabled NSFW
+// Returns whether a channel with given channelID has NSFW enabled
 func IsNSFW(session *discordgo.Session, channelID string) bool {
 	channel, err := session.Channel(channelID)
 	if err != nil {
@@ -85,16 +78,15 @@ func IsNSFW(session *discordgo.Session, channelID string) bool {
 	return channel.NSFW
 }
 
-// GetStringVal if string str is not set it returns var notSet, if its set it returns var str
+// If str is empty notSet is returned otherwise str is returned
 func GetStringVal(str string, notSet string) string {
-	switch {
-	case str == "":
+	if str == "" {
 		return notSet
-	default:
-		return str
 	}
+	return str
 }
 
+// Returns response body contents from given webpage
 func GetWebpageContent(url string) []byte {
 	response, err := http.Get(url)
 

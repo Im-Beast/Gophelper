@@ -11,7 +11,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-//Stats statistics about user
+// Command which replies with information about specific user
 var Stats = &gophelper.Command{
 	ID: "Stats",
 
@@ -31,26 +31,25 @@ var Stats = &gophelper.Command{
 
 	Handler: func(context *gophelper.CommandContext) {
 		session := context.Session
-		message := context.Event
-		arguments := context.Arguments
+		msg := context.Event
+		args := context.Arguments
+		lang := context.Router.Config.Language
+		cmdLang := lang.Commands[context.Command.ID]
 
-		language := context.Command.LanguageSettings
-		routerLanguage := context.Router.Config.Language
+		memberID := msg.Author.ID
 
-		memberID := message.Author.ID
-
-		if len(arguments) > 0 {
-			memberID = arguments[0]
+		if len(args) > 0 {
+			memberID = args[0]
 
 			if utils.IsMention(memberID) {
 				memberID = utils.MentionToID(memberID)
 			}
 		}
 
-		member, err := session.GuildMember(message.GuildID, memberID)
+		member, err := session.GuildMember(msg.GuildID, memberID)
 
 		if err != nil {
-			_, err := session.ChannelMessageSend(message.ChannelID, language.UserNotFound)
+			_, err := session.ChannelMessageSend(msg.ChannelID, cmdLang.UserNotFound)
 			if err != nil {
 				log.Printf("Command Stats errored while sending error message: %s\n", err.Error())
 			}
@@ -62,28 +61,28 @@ var Stats = &gophelper.Command{
 
 		embed := &discordgo.MessageEmbed{
 			Color: 0x007d9c,
-			Title: fmt.Sprintf(language.Title, member.User.Username, member.User.Discriminator),
+			Title: fmt.Sprintf(cmdLang.Title, member.User.Username, member.User.Discriminator),
 			Thumbnail: &discordgo.MessageEmbedThumbnail{
 				URL: member.User.AvatarURL("512"),
 			},
 			Fields: []*discordgo.MessageEmbedField{
 				{
-					Name:   language.CreationDate,
+					Name:   cmdLang.CreationDate,
 					Value:  creationDate.Format("2 January 2006 **15:04**"),
 					Inline: false,
 				},
 				{
-					Name:   language.JoinDate,
+					Name:   cmdLang.JoinDate,
 					Value:  joinDate.Format("2 January 2006 **15:04**"),
 					Inline: false,
 				},
 			},
 			Footer: &discordgo.MessageEmbedFooter{
-				Text: utils.RandomStringElement(routerLanguage.FunFacts),
+				Text: utils.RandomStringElement(lang.FunFacts),
 			},
 		}
 
-		_, err = session.ChannelMessageSendEmbed(message.ChannelID, embed)
+		_, err = session.ChannelMessageSendEmbed(msg.ChannelID, embed)
 
 		if err != nil {
 			log.Printf("Command Stats errored while sending embed message: %s\n", err.Error())

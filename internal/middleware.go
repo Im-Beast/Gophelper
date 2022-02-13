@@ -1,4 +1,4 @@
 package gophelper
 
-// Middleware handler used before running command
+// Function called before running command handler
 type Middleware func(*CommandContext) (bool, func(*CommandContext))

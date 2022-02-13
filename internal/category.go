@@ -2,7 +2,7 @@ package gophelper
 
 import "fmt"
 
-// Category command category
+// Command category structure
 type Category struct {
 	Name          string
 	Aliases       []string
@@ -10,6 +10,7 @@ type Category struct {
 	ReactionEmoji string
 }
 
+// Converts string to category
 func StringToCategory(strCategory string) (*Category, error) {
 	for _, category := range CATEGORIES {
 		if category.Name == strCategory {
